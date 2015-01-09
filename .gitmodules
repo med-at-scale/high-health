@@ -1,0 +1,3 @@
+[submodule "schemas/ga4gh"]
+	path = schemas/ga4gh
+	url = git@github.com:ga4gh/schemas.git
