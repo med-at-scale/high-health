@@ -1,1 +1,6 @@
 target
+.idea/
+.idea_modules/
+adam.log
+high-health.iml
+logs

@@ -6,10 +6,10 @@
 GET     /                           controllers.Application.index
 
 # VARIANTS
-POST /variantsets/search            controllers.variants.VariantMethods.searchVariantSets()
-POST /variants/search               controllers.variants.VariantMethods.searchVariants()
-POST /callsets/search               controllers.variants.VariantMethods.searchCallSets()
-GET /callsets/:id                   controllers.variants.VariantMethods.getCallSet(id:String)
+POST /variantsets/search            controllers.variants.VariantController.searchVariantSets()
+POST /variants/search               controllers.variants.VariantController.searchVariants()
+POST /callsets/search               controllers.variants.VariantController.searchCallSets()
+GET /callsets/:id                   controllers.variants.VariantController.getCallSet(id:String)
 
 
 # Map static resources from the /public folder to the /assets URL path
