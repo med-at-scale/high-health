@@ -6,6 +6,7 @@ import scala.collection.JavaConversions._
 import scala.reflect.runtime.universe._
 
 import play.api._
+import play.api.libs.json._
 import play.api.mvc._
 
 import org.apache.avro.Schema
@@ -54,9 +55,11 @@ object VariantController extends Controller {
      'http://localhost:9000/variants/search'
      ```
     */
-  def searchVariants() = Action(BodyParsers.parse.text) { json =>
+  def searchVariants() = Action(BodyParsers.parse.json) { json =>
     //FIXME → deserve async
-    val searchRequest = fromJson[SearchVariantsRequest](json.body)
+    val jsonString = Json.stringify(json.body)
+    println(jsonString)
+    val searchRequest = fromJson[SearchVariantsRequest](jsonString)
     val resp = server.VariantMethods.searchVariants(searchRequest)
     NotImplemented("serialiaze the response! " + resp.toString)
   }

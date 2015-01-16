@@ -11,6 +11,11 @@ POST /variants/search               controllers.variants.VariantController.searc
 POST /callsets/search               controllers.variants.VariantController.searchCallSets()
 GET /callsets/:id                   controllers.variants.VariantController.getCallSet(id:String)
 
+# CUSTOM
+GET /samples/count/:chr             controllers.custom.CustomController.countSamples(chr:Int)
+
+# javascript router
+GET /javascriptRoutes               controllers.Application.javascriptRoutes
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
