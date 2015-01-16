@@ -1,6 +1,7 @@
 package server
 
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 import org.apache.avro.AvroRemoteException
 
@@ -45,7 +46,7 @@ object VariantMethods extends IVariantMethods {
   def searchVariants(request:SearchVariantsRequest):SearchVariantsResponse = {
     //@throws AvroRemoteException, GAException
     //TODO!
-    val ids:List[String] = request.getVariantSetIds.toList.map(_.toString)
+    val ids:List[String] = request.getVariantSetIds.asScala.toList.map(_.toString)
     val l:RDD[String] = adam.sc.parallelize(ids)
     println("count >> " + l.count)
 
