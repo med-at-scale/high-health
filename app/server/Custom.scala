@@ -19,8 +19,8 @@ import org.bdgenomics.adam.rdd.variation.VariationContext._
 import org.bdgenomics.adam.rdd.ADAMContext
 
 
-case class Source(ref:String, pattern:Int=>String) {
-  def chr(chromosome:Int):String = ref + pattern(chromosome)
+case class Source(ref:String, pattern:String=>String) {
+  def chr(chromosome:String):String = ref + pattern(chromosome)
 }
 
 object Custom {
@@ -32,11 +32,11 @@ object Custom {
 
   @transient val Sources = new {
     val `med-at-scale` =
-      Source("s3n://med-at-scale/1000genomes/", ((i:Int) => s"ALL.chr$i.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.adam/"))
+      Source("s3n://med-at-scale/1000genomes/", ((i:String) => s"ALL.chr$i.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.adam/"))
   }
 
 
-  def countSamples(chromosome:Int, source:Source=Sources.`med-at-scale`):Int = {
+  def countSamples(chromosome:String, source:Source=Sources.`med-at-scale`):Int = {
     val chr = source.chr(chromosome)
 
     println(chr)
@@ -46,4 +46,22 @@ object Custom {
 
     sampleCount.toInt
   }
+
+  def countsOnChromosome(chromosome: String, source:Source=Sources.`med-at-scale`):(Long, Long, Long) = {
+    val chr = source.chr(chromosome)
+
+    println(chr)
+    val gts:RDD[Genotype] = adam.sc.adamLoad(chr)
+    // mmmh seems that after adamLoad, the persistence level is already set...and cached?
+    //gts.persist(org.apache.spark.storage.StorageLevel.MEMORY_AND_DISK)
+    gts.cache
+    val sampleCount = gts.map(_.getSampleId.toString.hashCode).distinct.count
+    println(s"$chr $sampleCount samples")
+    val variantCount = gts.map(_.getVariant.toString.hashCode).distinct.count
+    println(s"$chr $variantCount variants")
+    val genotypeCount = gts.count
+    println(s"$chr $genotypeCount genotypes")
+    (sampleCount, variantCount, genotypeCount)
+  }
+
 }
