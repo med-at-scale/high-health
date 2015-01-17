@@ -45,10 +45,30 @@ object VariantMethods extends IVariantMethods {
    */
   def searchVariants(request:SearchVariantsRequest):SearchVariantsResponse = {
     //@throws AvroRemoteException, GAException
-    //TODO!
     val ids:List[String] = request.getVariantSetIds.asScala.toList.map(_.toString)
-    val l:RDD[String] = adam.sc.parallelize(ids)
-    println("count >> " + l.count)
+
+
+    //TODO
+    val chromosome = "22"
+
+    //https://github.com/bigdatagenomics/bdg-formats/blob/master/src/main/resources/avro/bdg.avdl
+
+    val source = Sources.`med-at-scale`
+
+    val chr = source.chr(chromosome)
+
+    val gts:RDD[Genotype] = adam.sc.adamLoad(chr)
+
+    gts.map{ g =>
+      val variant = g.variant
+      val start = variant.start
+      val end = variant.end
+
+      // no variant id...??
+
+      //how to create Variant object from ga4gh → CallSet objects and so on
+
+    }
 
     ???
   }
