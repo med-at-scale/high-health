@@ -14,7 +14,7 @@ object CustomController extends Controller {
   
   def countsOnChromosome(chr:String) = Action {
   	val counts = Custom.countsOnChromosome(chr)
-  	Ok(s"#Samples: ${counts._1}, #Variants: ${counts._2}, #Genotypes: ${counts._3}")
+  	Ok(s"Chromosome $chr, #Samples: ${counts._1}, #Variants: ${counts._2}, #Genotypes: ${counts._3}\n")
   }
 
 }
