@@ -34,6 +34,15 @@ object Custom {
     sampleCount.toInt
   }
 
+  def head(chromosome: String, size:Int, source:Source=Sources.`med-at-scale`):List[Genotype] = {
+    val chr = source.chr(chromosome)
+
+    println(chr)
+    val gts:RDD[Genotype] = adam.sc.adamLoad(chr)
+
+    gts.take(size).toList
+  }
+
   def countsOnChromosome(chromosome: String, source:Source=Sources.`med-at-scale`):(Long, Long, Long) = {
     val chr = source.chr(chromosome)
 

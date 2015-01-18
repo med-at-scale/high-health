@@ -12,8 +12,9 @@ POST /callsets/search               controllers.variants.VariantController.searc
 GET /callsets/:id                   controllers.variants.VariantController.getCallSet(id:String)
 
 # CUSTOM
-GET /samples/count/:chr             controllers.custom.CustomController.countSamples(chr:String)
-GET /counts/:chr                    controllers.custom.CustomController.countsOnChromosome(chr:String)
+GET /custom/samples/count/:chr      controllers.custom.CustomController.countSamples(chr:String)
+GET /custom/counts/:chr             controllers.custom.CustomController.countsOnChromosome(chr:String)
+GET /custom/head/:chr               controllers.custom.CustomController.head(chr:String, size:Int)
 
 # javascript router
 GET /javascriptRoutes               controllers.Application.javascriptRoutes
