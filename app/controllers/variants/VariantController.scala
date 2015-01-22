@@ -40,28 +40,29 @@ object VariantController extends Controller {
   /**
      Try with
      ```
-     curl -i -X POST \
-       -d \
-        '{
-          "variantSetIds": [ "v1", "v6" ],
-          "variantName": {"string": "daName"},
-          "referenceName": "bof",
-          "start": 10,
-          "end": 251,
-          "pageSize": {"int": 10},
-          "pageToken": {"string": "daToken"},
-          "callSetIds": null
-        }' \
-     'http://localhost:9000/variants/search'
+      curl -i -X POST \
+         -H "Content-Type:text/plain; charset=utf-8" \
+         -d \
+      '{
+        "variantSetIds": [ "med-at-scale/chr22.vcf" ],
+        "variantName": {"string": "notUsed"},
+        "referenceName": "22",
+        "start": 38617521,
+        "end": 38617523,
+        "pageSize": {"int": 10},
+        "pageToken": {"string": "notUsed"},
+        "callSetIds": {"array": [ "notUsed" ] }
+      }' \
+       'http://localhost:9000/variants/search'
      ```
     */
   def searchVariants() = Action(BodyParsers.parse.json) { json =>
-    //FIXME → deserve async
+    //FIXME → deserves async
     val jsonString = Json.stringify(json.body)
     println(jsonString)
     val searchRequest = fromJson[SearchVariantsRequest](jsonString)
     val resp = server.VariantMethods.searchVariants(searchRequest)
-    NotImplemented("serialiaze the response! " + resp.toString)
+    Ok(resp.toString)
   }
 
   /*

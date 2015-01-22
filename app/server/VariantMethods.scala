@@ -13,7 +13,7 @@ import org.ga4gh.methods.{VariantMethods => IVariantMethods, _}
 import org.apache.hadoop.fs.{FileSystem, Path}
 
 import org.bdgenomics.adam.converters.{ VCFLine, VCFLineConverter, VCFLineParser }
-import org.bdgenomics.formats.avro.{Genotype, FlatGenotype}
+import org.bdgenomics.formats.avro.{FlatGenotype, Genotype, GenotypeAllele}
 import org.bdgenomics.adam.models.VariantContext
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rdd.variation.VariationContext._
@@ -76,10 +76,17 @@ object VariantMethods extends IVariantMethods {
     val chr = validChrs.head
 
     val gts:RDD[Genotype] = adam.sc.adamLoad(source.chr(chr))
+
+    val pageSize = request.getPageSize()
+    val currentPage = 0 //TODO: should be derived using : request.getPageToken
+
     //https://github.com/bigdatagenomics/bdg-formats/blob/master/src/main/resources/avro/bdg.avdl
     val variants = gts.filter( g =>
       rangeOverlaps((start, end), (g.variant.start, g.variant.end))
-    ).map{ g =>
+    )
+    .take(pageSize*(currentPage+1))
+    .drop(pageSize*currentPage)
+    .map{ g =>
       //`g` contains things like likelihood,dosage, alleles, phase etc.
       // which are used in the Call of the GA4GH api
       // It looks like the model is a bit reversed
@@ -109,24 +116,54 @@ object VariantMethods extends IVariantMethods {
       //          genotypeLikelihood:List[Double],
       //          info:Map[String, List[String]])
 
+      val alleles:List[Int] = g.alleles.asScala.toList.map {
+        case GenotypeAllele.Ref => 0
+        case GenotypeAllele.Alt => 1
+        case GenotypeAllele.OtherAlt => 2
+        case GenotypeAllele.NoCall => -1 //TODO → exception?
+        case _ => -1
+      }
+      val likelihoods:java.util.List[java.lang.Double] = g.genotypeLikelihoods.asScala.toList.map(x => new java.lang.Double(x.toDouble / 100)).asJava
       val v = new Variant(
         java.util.UUID.randomUUID.toString,//TODO
         source.chr(chr),//TODO
         List(""), //TODO
-        0,//???
-        0,//???
+        0,//TODO use the date in the 1kg file name
+        0,//TODO use the date in the 1kg file name
         chr,//TODO
         variant.start,
         variant.end,
         variant.referenceAllele,
         List(variant.alternateAllele), //TODO → a list? in ADAM, there a single string
         Map.empty[String, java.util.List[String]].asJava,//TODO
-        List.empty[Call]// will use the Genotype info !
+        List(new Call(
+          chr,
+          "1000genomes",
+          /*TODO genotype → The genotype of this variant call. Each value represents either the value of the referenceBases
+           field or is a 1-based index into alternateBases.
+           If a variant had a referenceBases field of "T", an alternateBases value of ["A", "C"],
+           and the genotype was [2, 1], that would mean the call represented the heterozygous value "CA" for this variant.
+           If the genotype was instead [0, 1] the represented value would be "TA".
+           Ordering of the genotype values is important if the phaseset field is present.
+           */
+           alleles,
+           /*TODO is it pertinent ?
+            * (If this field is present, this variant call's genotype ordering implies the phase of the bases and is consistent
+            *  with any other variant calls on the same contig which have the same phaseset value.)*/
+           null,
+           /*
+           The genotype likelihoods for this variant call. Each array entry represents how likely a specific genotype is
+           for this call as log10(P(data | genotype)), analogous to the GL tag in the VCF spec.
+           The value ordering is defined by the GL tag in the VCF spec.
+            */
+            likelihoods,
+            Map.empty[String, java.util.List[String]].asJava
+        ))
       )
       v
     }
 
-    new SearchVariantsResponse(variants.collect().toList, "nextPageToken")
+    new SearchVariantsResponse(variants.toList.asJava, "nextPageToken")
   }
 
   /**
