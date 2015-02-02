@@ -4,7 +4,7 @@ import play.api._
 import play.api.libs.json._
 import play.api.mvc._
 
-import server.Custom
+import server.custom.Custom
 
 object CustomController extends Controller {
 

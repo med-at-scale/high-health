@@ -1,4 +1,4 @@
-package server
+package server.custom
 
 import scala.collection.JavaConversions._
 
@@ -17,6 +17,8 @@ import org.bdgenomics.adam.models.VariantContext
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rdd.variation.VariationContext._
 import org.bdgenomics.adam.rdd.ADAMContext
+
+import server.{Source, Sources}
 
 object Custom {
 
@@ -37,8 +39,12 @@ object Custom {
   def head(chromosome: String, size:Int, source:Source=Sources.`med-at-scale`):List[Genotype] = {
     val chr = source.chr(chromosome)
 
-    println(chr)
     val gts:RDD[Genotype] = adam.sc.adamLoad(chr)
+
+    // even this blows an exception when using Tachyon
+    // java.lang.OutOfMemoryError: Requested array size exceeds VM limit
+    gts.repartition(gts.partitions.size*10)
+    gts.persist(org.apache.spark.storage.StorageLevel.OFF_HEAP)
 
     gts.take(size).toList
   }
@@ -58,6 +64,11 @@ object Custom {
     // Which is related to the UNRESOLVED https://issues.apache.org/jira/browse/SPARK-1476
     // Apparently, and weirdly, the partition of 7.5Mb on s3 will create disk storage more than 2G Ôö
     //gts.persist(org.apache.spark.storage.StorageLevel.DISK_ONLY)
+    //
+    // Andy
+    // Even tachyon is failing on this one, it fails with a too big array issue (size > Int.MaxValue)!!!
+
+    gts.persist(org.apache.spark.storage.StorageLevel.OFF_HEAP)
 
     val genotypeCount = gts.count
     println(s"$chr $genotypeCount genotypes")

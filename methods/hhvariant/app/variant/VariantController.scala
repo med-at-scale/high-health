@@ -1,4 +1,6 @@
-package controllers.variants
+package controllers.variant
+
+import java.net.InetSocketAddress
 
 import java.io.{ByteArrayInputStream, DataInputStream, InputStream}
 
@@ -12,8 +14,12 @@ import play.api.mvc._
 import org.apache.avro.Schema
 import org.apache.avro.io.{DatumReader, Decoder, DecoderFactory}
 import org.apache.avro.specific.SpecificDatumReader
+import org.apache.avro.ipc.NettyTransceiver
+import org.apache.avro.ipc.specific.SpecificRequestor
 
-import org.ga4gh.methods.{SearchCallSetsRequest, SearchVariantsRequest}
+import org.ga4gh.methods.{SearchCallSetsRequest, SearchVariantsRequest, VariantMethods}
+
+import server.variant.Variants
 
 object VariantController extends Controller {
 
@@ -61,7 +67,8 @@ object VariantController extends Controller {
     val jsonString = Json.stringify(json.body)
     println(jsonString)
     val searchRequest = fromJson[SearchVariantsRequest](jsonString)
-    val resp = server.VariantMethods.searchVariants(searchRequest)
+    //val resp = server.VariantMethods.searchVariants(searchRequest)
+    val resp = Variants.searchVariants(searchRequest)
     Ok(resp.toString)
   }
 
@@ -86,5 +93,15 @@ object VariantController extends Controller {
   }
 
   def getCallSet(id:String) = TODO
+
+
+  def javascriptRoutes = Action { implicit request =>
+    import controllers.variant.routes._
+    Ok(
+      Routes.javascriptRouter("jsRoutes")(
+        javascript.VariantController.searchVariants
+      )
+    ).as("text/javascript")
+  }
 
 }

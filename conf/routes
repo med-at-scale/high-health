@@ -1,3 +1,7 @@
+# Delegate routes to sub-modules
+
+GET  /                        controllers.Application.index()
+
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
@@ -5,19 +9,19 @@
 # Home page
 GET     /                           controllers.Application.index
 
-# VARIANTS
-POST /variantsets/search            controllers.variants.VariantController.searchVariantSets()
-POST /variants/search               controllers.variants.VariantController.searchVariants()
-POST /callsets/search               controllers.variants.VariantController.searchCallSets()
-GET /callsets/:id                   controllers.variants.VariantController.getCallSet(id:String)
-
-# CUSTOM
-GET /custom/samples/count/:chr      controllers.custom.CustomController.countSamples(chr:String)
-GET /custom/counts/:chr             controllers.custom.CustomController.countsOnChromosome(chr:String)
-GET /custom/head/:chr               controllers.custom.CustomController.head(chr:String, size:Int)
-
-# javascript router
-GET /javascriptRoutes               controllers.Application.javascriptRoutes
-
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+
+
+# ->  / common.Routes
+
+# ->  / hhmetadata.Routes
+
+# ->  / hhread.Routes
+
+# ->  / hhreference.Routes
+
+->  / hhvariant.Routes
+
+->  / hhcustom.Routes
