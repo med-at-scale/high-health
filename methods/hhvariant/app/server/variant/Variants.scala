@@ -136,11 +136,11 @@ object Variants extends VariantMethods {
       //          info:Map[String, List[String]])
 
       val alleles:List[Int] = g.alleles.asScala.toList.map {
-        case GenotypeAllele.Ref => 0
-        case GenotypeAllele.Alt => 1
-        case GenotypeAllele.OtherAlt => 2
-        case GenotypeAllele.NoCall => -1 //TODO → exception?
-        case _ => -1
+        case GenotypeAllele.Ref       => 0
+        case GenotypeAllele.Alt       => 1
+        case GenotypeAllele.OtherAlt  => 2
+        case GenotypeAllele.NoCall    => -1 //TODO → exception?
+        case _                        => -1
       }
       val likelihoods:java.util.List[java.lang.Double] = g.genotypeLikelihoods.asScala.toList.map(x => new java.lang.Double(x.toDouble / 100)).asJava
       val v = new Variant(

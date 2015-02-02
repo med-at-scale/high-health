@@ -67,8 +67,8 @@ object Custom {
     //
     // Andy
     // Even tachyon is failing on this one, it fails with a too big array issue (size > Int.MaxValue)!!!
-
-    gts.persist(org.apache.spark.storage.StorageLevel.OFF_HEAP)
+    //            ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    //gts.persist(org.apache.spark.storage.StorageLevel.OFF_HEAP)
 
     val genotypeCount = gts.count
     println(s"$chr $genotypeCount genotypes")
