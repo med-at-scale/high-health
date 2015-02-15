@@ -47,7 +47,7 @@ object VariantController extends Controller {
      Try with
      ```
       curl -i -X POST \
-         -H "Content-Type:text/plain; charset=utf-8" \
+         -H "Content-Type:text/json; charset=utf-8" \
          -d \
       '{
         "variantSetIds": [ "med-at-scale/chr22.vcf" ],

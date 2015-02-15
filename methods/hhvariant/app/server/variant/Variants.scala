@@ -29,7 +29,9 @@ import server.{Source, Sources}
 
 object Variants extends VariantMethods {
 
-  @transient private [this] lazy val _ipc = new NettyServer(new SpecificResponder(classOf[VariantMethods], this), new InetSocketAddress(65001))
+  @transient private [this] lazy val _ipc = new NettyServer(new SpecificResponder(classOf[VariantMethods], this),
+                                                            new InetSocketAddress(65001)
+                                                          )
 
   @transient lazy val start = {
     _ipc
