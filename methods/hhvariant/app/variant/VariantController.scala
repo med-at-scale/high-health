@@ -71,7 +71,28 @@ object VariantController extends Controller {
     val resp = Variants.searchVariants(searchRequest)
     Ok(resp.toString)
   }
+/*
+Access-Control-Allow-Headers:content-type
+Access-Control-Allow-Headers:accept
+Access-Control-Allow-Methods:OPTIONS
+Access-Control-Allow-Methods:GET
+Access-Control-Allow-Methods:POST
+Access-Control-Allow-Origin:*
+Access-Control-Max-Age:10
+Content-Length:0
+Content-Type:text/plain
+Date:Wed, 04 Mar 2015 23:44:00 GMT
+Server:HTTP::Server::PSGI
+*/
 
+  def searchVariantsOpts() = Action {
+    println("Options on variants search")
+    Ok("").withHeaders(
+      "Access-Control-Allow-Headers"   -> "content-type,accept" ,
+      "Access-Control-Request-Methods" -> "OPTIONS,POST"    ,
+      "Access-Control-Allow-Origin"    ->  "*"              
+      )
+  }
   /*
       Test by POSTing the below json string on http://localhost:9000/callsets/search
       ```

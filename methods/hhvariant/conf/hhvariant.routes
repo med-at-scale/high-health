@@ -1,6 +1,9 @@
 
 POST /variantsets/search            controllers.variant.VariantController.searchVariantSets()
-POST /variants/search               controllers.variant.VariantController.searchVariants()
+
+POST    /variants/search               controllers.variant.VariantController.searchVariants()
+OPTIONS /variants/search               controllers.variant.VariantController.searchVariantsOpts()
+
 POST /callsets/search               controllers.variant.VariantController.searchCallSets()
 GET  /callsets/:id                  controllers.variant.VariantController.getCallSet(id:String)
 
