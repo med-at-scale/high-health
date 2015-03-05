@@ -20,6 +20,7 @@ import org.apache.avro.ipc.specific.SpecificRequestor
 import org.ga4gh.methods.{SearchCallSetsRequest, SearchVariantsRequest, SearchVariantSetsRequest, VariantMethods}
 
 import server.variant.Variants
+import sanitizer.variant.VariantSanitizer
 
 object VariantController extends Controller {
 
@@ -51,7 +52,8 @@ object VariantController extends Controller {
 
   def searchVariantSets() = Action(BodyParsers.parse.json) { json =>
     //FIXME → deserves async
-    val jsonString = Json.stringify(json.body)
+    val jsonStringUnsafe = Json.stringify(json.body)
+    val jsonString = VariantSanitizer.searchVariantSetsRequest(jsonStringUnsafe)
     println(jsonString)
     val searchRequest = fromJson[SearchVariantSetsRequest](jsonString)
     //val resp = server.VariantMethods.searchVariants(searchRequest)
