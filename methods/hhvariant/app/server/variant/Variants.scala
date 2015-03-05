@@ -56,7 +56,20 @@ object Variants extends VariantMethods {
    */
   def searchVariantSets(request:SearchVariantSetsRequest):SearchVariantSetsResponse = {
     //@throws AvroRemoteException, GAException
-    ???
+//    request.datasetIds
+//    request.pageSize
+//    request.pagetoken
+    val source = Sources.`med-at-scale`
+
+    val ids:List[String] = request.getDatasetIds.asScala.toList
+    val variantSets = ids.map { id =>
+      source.variantSetForDataset(id)
+    }.collect {
+      case Some(x) => x
+    }
+
+    val nextPageToken = ""
+    new SearchVariantSetsResponse(variantSets.toList.asJava, nextPageToken)
   }
 
 

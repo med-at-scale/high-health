@@ -1,5 +1,6 @@
 
-POST /variantsets/search            controllers.variant.VariantController.searchVariantSets()
+POST    /variantsets/search            controllers.variant.VariantController.searchVariantSets()
+OPTIONS /variantsets/search            controllers.variant.VariantController.searchVariantSetsOpts()
 
 POST    /variants/search               controllers.variant.VariantController.searchVariants()
 OPTIONS /variants/search               controllers.variant.VariantController.searchVariantsOpts()

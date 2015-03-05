@@ -17,7 +17,7 @@ import org.apache.avro.specific.SpecificDatumReader
 import org.apache.avro.ipc.NettyTransceiver
 import org.apache.avro.ipc.specific.SpecificRequestor
 
-import org.ga4gh.methods.{SearchCallSetsRequest, SearchVariantsRequest, VariantMethods}
+import org.ga4gh.methods.{SearchCallSetsRequest, SearchVariantsRequest, SearchVariantSetsRequest, VariantMethods}
 
 import server.variant.Variants
 
@@ -41,8 +41,27 @@ object VariantController extends Controller {
     datum
   }
 
-  def searchVariantSets() = TODO
+  def isPositiveOnOption() = Action {
+    Ok("").withHeaders(
+      "Access-Control-Allow-Headers"   -> "content-type,accept" ,
+      "Access-Control-Request-Methods" -> "OPTIONS,POST"    ,
+      "Access-Control-Allow-Origin"    ->  "*"              
+      )
+  }
 
+  def searchVariantSets() = Action(BodyParsers.parse.json) { json =>
+    //FIXME → deserves async
+    val jsonString = Json.stringify(json.body)
+    println(jsonString)
+    val searchRequest = fromJson[SearchVariantSetsRequest](jsonString)
+    //val resp = server.VariantMethods.searchVariants(searchRequest)
+    val resp = Variants.searchVariantSets(searchRequest)
+    Ok(resp.toString).withHeaders(
+      "content-type" -> "application/json"
+      )
+  }
+ 
+  def searchVariantSetsOpts() = isPositiveOnOption
   /**
      Try with
      ```
