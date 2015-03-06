@@ -1,11 +1,12 @@
 
 POST    /variantsets/search            controllers.variant.VariantController.searchVariantSets()
-OPTIONS /variantsets/search            controllers.variant.VariantController.searchVariantSetsOpts()
+OPTIONS /variantsets/search            controllers.variant.VariantController.CORSoption(verbs = "OPTIONS,POST")
 
 POST    /variants/search               controllers.variant.VariantController.searchVariants()
-OPTIONS /variants/search               controllers.variant.VariantController.searchVariantsOpts()
+OPTIONS /variants/search               controllers.variant.VariantController.CORSoption(verbs = "OPTIONS,POST")
 
 POST /callsets/search               controllers.variant.VariantController.searchCallSets()
+
 GET  /callsets/:id                  controllers.variant.VariantController.getCallSet(id:String)
 
 # javascript router

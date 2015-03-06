@@ -21,8 +21,9 @@ import org.ga4gh.methods.{SearchCallSetsRequest, SearchVariantsRequest, SearchVa
 
 import server.variant.Variants
 import sanitizer.variant.VariantSanitizer
+import server.CORS
 
-object VariantController extends Controller {
+object VariantController extends Controller with CORS {
 
   // API is http://avro.apache.org/docs/current/api/java/org/apache/avro/io/package-summary.html
   def fromJson[T:TypeTag](json:String):T = {
@@ -42,15 +43,11 @@ object VariantController extends Controller {
     datum
   }
 
-  def isPositiveOnOption() = Action {
-    Ok("").withHeaders(
-      "Access-Control-Allow-Headers"   -> "content-type,accept" ,
-      "Access-Control-Request-Methods" -> "OPTIONS,POST"    ,
-      "Access-Control-Allow-Origin"    ->  "*"              
-      )
+  def CORSoption(verbs: String) = CORSAction(verbs) { implicit request =>
+    Ok("")
   }
 
-  def searchVariantSets() = Action(BodyParsers.parse.json) { json =>
+  def searchVariantSets() = CORSAction("POST,OPTIONS", BodyParsers.parse.json) { json =>
     //FIXME → deserves async
     val jsonStringUnsafe = Json.stringify(json.body)
     val jsonString = VariantSanitizer.searchVariantSetsRequest(jsonStringUnsafe)
@@ -63,7 +60,7 @@ object VariantController extends Controller {
       )
   }
  
-  def searchVariantSetsOpts() = isPositiveOnOption
+//  def searchVariantSetsOpts() = isPositiveOnOption
   /**
      Try with
      ```
@@ -83,14 +80,16 @@ object VariantController extends Controller {
        'http://localhost:9000/variants/search'
      ```
     */
-  def searchVariants() = Action(BodyParsers.parse.json) { json =>
+  def searchVariants() = CORSAction("POST,OPTIONS", BodyParsers.parse.json) { json =>
     //FIXME → deserves async
     val jsonString = Json.stringify(json.body)
     println(jsonString)
     val searchRequest = fromJson[SearchVariantsRequest](jsonString)
     //val resp = server.VariantMethods.searchVariants(searchRequest)
     val resp = Variants.searchVariants(searchRequest)
-    Ok(resp.toString)
+    Ok(resp.toString).withHeaders(
+      "content-type" -> "application/json"
+      )
   }
 /*
 Access-Control-Allow-Headers:content-type
@@ -106,13 +105,9 @@ Date:Wed, 04 Mar 2015 23:44:00 GMT
 Server:HTTP::Server::PSGI
 */
 
-  def searchVariantsOpts() = Action {
+  def searchVariantsOpts() = CORSAction("OPTIONS,POST") { implicit request =>
     println("Options on variants search")
-    Ok("").withHeaders(
-      "Access-Control-Allow-Headers"   -> "content-type,accept" ,
-      "Access-Control-Request-Methods" -> "OPTIONS,POST"    ,
-      "Access-Control-Allow-Origin"    ->  "*"              
-      )
+    Ok("")
   }
   /*
       Test by POSTing the below json string on http://localhost:9000/callsets/search
