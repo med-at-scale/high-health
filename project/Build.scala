@@ -15,7 +15,7 @@ object HighHealthBuild extends Build {
     // Add your project dependencies here,
     "med-at-scale"        %  "ga4gh-model-java" % "0.1.0-SNAPSHOT"   excludeAll(ExclusionRule("org.mortbay.jetty"), ExclusionRule("org.eclipse.jetty")),
     "org.apache.avro"     %  "avro-ipc"         % "1.7.6"  excludeAll(ExclusionRule("org.mortbay.jetty"), ExclusionRule("org.eclipse.jetty")),
-    "com.typesafe.play"   % "play_2.10"         % "2.2.6"
+    "com.typesafe.play"   % "play_2.10"         % "2.2.6"  excludeAll(ExclusionRule("com.typesafe.akka"))
 
   )
 

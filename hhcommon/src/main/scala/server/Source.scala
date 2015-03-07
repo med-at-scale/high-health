@@ -20,7 +20,7 @@ object Sources {
 	    	case "1000genomes" => {
 	    		val info = Map[String, java.util.List[java.lang.String]]("build" -> List("human", "whatever"))
 	    		val metadata = new org.ga4gh.models.VariantSetMetadata("reference", "GRCh37", "genome", "UNKNOWN_TYPE", "1", "genome", info)
-	    		Some(new org.ga4gh.models.VariantSet("0", "1000genomes", "referenceSetId", List[org.ga4gh.models.VariantSetMetadata](metadata)))
+	    		Some(new org.ga4gh.models.VariantSet("22", "1000genomes", "referenceSetId", List[org.ga4gh.models.VariantSetMetadata](metadata)))
 	    	}
 	    	case _ => None
 	    }

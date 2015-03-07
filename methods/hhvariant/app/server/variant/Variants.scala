@@ -87,28 +87,35 @@ object Variants extends VariantMethods {
     val source = Sources.`med-at-scale`
 
     val ids:List[String] = request.getVariantSetIds.asScala.toList.map(_.toString)
+    println(ids)
     //TOCHECK → filter ids matching the source (med-at-scale 1000genomes)
     //          since a VarianSet correspond to a VCF file
     //          but for 1000genomes, a vcf is a chromosome
+
+    /// ????? Don't get it? vcf?
+    /*
     val variantIdR = "med-at-scale/chr(.+)\\.vcf".r
+
     val chrs = ids.map {
       case variantIdR(chr) => chr
     }
+    */
 
     /*
       The reference on which this variant occurs.
       (e.g. `chr20` or `X`)
     */
     val referenceName = request.getReferenceName
-    var validChrs = chrs.find(_ == referenceName)
+    //var validChrs = chrs.find(_ == referenceName)
 
 
     val start = request.getStart()
     val end = request.getEnd()
 
     //TODO
-    val chr = validChrs.head
-
+    //val chr = validChrs.head
+    val chr = ids.head
+    
     val gts:RDD[Genotype] = adam.sc.adamLoad(source.chr(chr))
 
     val pageSize = request.getPageSize()

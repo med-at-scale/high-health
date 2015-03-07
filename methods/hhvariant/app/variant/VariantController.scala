@@ -82,7 +82,8 @@ object VariantController extends Controller with CORS {
     */
   def searchVariants() = CORSAction("POST,OPTIONS", BodyParsers.parse.json) { json =>
     //FIXME → deserves async
-    val jsonString = Json.stringify(json.body)
+    val jsonStringUnsafe = Json.stringify(json.body)
+    val jsonString = VariantSanitizer.searchVariantsRequest(jsonStringUnsafe)
     println(jsonString)
     val searchRequest = fromJson[SearchVariantsRequest](jsonString)
     //val resp = server.VariantMethods.searchVariants(searchRequest)
