@@ -11,11 +11,9 @@ import org.ga4gh.methods.{VariantMethods => IVariantMethods, _}
 
 import org.apache.hadoop.fs.{FileSystem, Path}
 
-import org.bdgenomics.adam.converters.{ VCFLine, VCFLineConverter, VCFLineParser }
 import org.bdgenomics.formats.avro.{Genotype, FlatGenotype}
 import org.bdgenomics.adam.models.VariantContext
 import org.bdgenomics.adam.rdd.ADAMContext._
-import org.bdgenomics.adam.rdd.variation.VariationContext._
 import org.bdgenomics.adam.rdd.ADAMContext
 
 import server.{Source, Sources}
