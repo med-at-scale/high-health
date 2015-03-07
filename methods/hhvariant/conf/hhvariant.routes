@@ -1,9 +1,9 @@
+OPTIONS /                              controllers.variant.VariantController.CORSoption(path="")
+OPTIONS /*path                         controllers.variant.VariantController.CORSoption(path)
 
 POST    /variantsets/search            controllers.variant.VariantController.searchVariantSets()
-OPTIONS /variantsets/search            controllers.variant.VariantController.CORSoption(verbs = "OPTIONS,POST")
 
 POST    /variants/search               controllers.variant.VariantController.searchVariants()
-OPTIONS /variants/search               controllers.variant.VariantController.CORSoption(verbs = "OPTIONS,POST")
 
 POST /callsets/search               controllers.variant.VariantController.searchCallSets()
 

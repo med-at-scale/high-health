@@ -43,11 +43,11 @@ object VariantController extends Controller with CORS {
     datum
   }
 
-  def CORSoption(verbs: String) = CORSAction(verbs) { implicit request =>
+  def CORSoption(path: String) = CORSAction("GET,POST,PUT,DELETE,OPTIONS,PATCH,HEAD") { implicit request =>
     Ok("")
   }
 
-  def searchVariantSets() = CORSAction("POST,OPTIONS", BodyParsers.parse.json) { json =>
+  def searchVariantSets() = Action(BodyParsers.parse.json) { json =>
     //FIXME → deserves async
     val jsonStringUnsafe = Json.stringify(json.body)
     val jsonString = VariantSanitizer.searchVariantSetsRequest(jsonStringUnsafe)
@@ -59,7 +59,7 @@ object VariantController extends Controller with CORS {
       "content-type" -> "application/json"
       )
   }
- 
+
 //  def searchVariantSetsOpts() = isPositiveOnOption
   /**
      Try with
@@ -80,7 +80,7 @@ object VariantController extends Controller with CORS {
        'http://localhost:9000/variants/search'
      ```
     */
-  def searchVariants() = CORSAction("POST,OPTIONS", BodyParsers.parse.json) { json =>
+  def searchVariants() = Action(BodyParsers.parse.json) { json =>
     //FIXME → deserves async
     val jsonStringUnsafe = Json.stringify(json.body)
     val jsonString = VariantSanitizer.searchVariantsRequest(jsonStringUnsafe)
@@ -106,7 +106,7 @@ Date:Wed, 04 Mar 2015 23:44:00 GMT
 Server:HTTP::Server::PSGI
 */
 
-  def searchVariantsOpts() = CORSAction("OPTIONS,POST") { implicit request =>
+  def searchVariantsOpts() = Action { implicit request =>
     println("Options on variants search")
     Ok("")
   }

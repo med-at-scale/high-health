@@ -1,6 +1,6 @@
 import sbt._
 import Keys._
-import play.Project._
+import play.PlayImport._
 
 // multi modules: https://github.com/kifi/multiproject/blob/master/conf%2Froutes
 
@@ -15,14 +15,14 @@ object HighHealthBuild extends Build {
     // Add your project dependencies here,
     "med-at-scale"        %  "ga4gh-model-java" % "0.1.0-SNAPSHOT"   excludeAll(ExclusionRule("org.mortbay.jetty"), ExclusionRule("org.eclipse.jetty")),
     "org.apache.avro"     %  "avro-ipc"         % "1.7.6"  excludeAll(ExclusionRule("org.mortbay.jetty"), ExclusionRule("org.eclipse.jetty")),
-    "com.typesafe.play"   % "play_2.10"         % "2.2.6"  excludeAll(ExclusionRule("com.typesafe.akka"))
-
+    "com.typesafe.play"   %% "play"             % "2.3.7"  excludeAll(ExclusionRule("com.typesafe.akka"))
+    // can be a better option for CORS → "com.github.dwhjames" %% "play-cors"        % "0.1.0"  excludeAll(ExclusionRule("com.typesafe.akka"))
   )
 
   //shared by methods
   val hhmethodsDependencies  = Seq(
-    "org.apache.spark"    %% "spark-core"       % "1.1.0" ,
-    "org.bdgenomics.adam" %  "adam-core"        % "0.15.0"
+    "org.apache.spark"    %% "spark-core"       % "1.2.1" ,
+    "org.bdgenomics.adam" %  "adam-core"        % "0.16.0"
   )
 
   // methods
@@ -34,7 +34,11 @@ object HighHealthBuild extends Build {
 
   val allDependencies = hhmethodsDependencies ++ hhmetadataDependencies ++ hhreadDependencies ++ hhreferenceDependencies ++ hhvariantDependencies ++ hhcustomDependencies
 
-
+  val allResolvers = Seq(
+    Resolver.mavenLocal,
+    bintray.Opts.resolver.repo("dwhjames", "maven"), //cors
+    "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+  )
 
   val scalaBuildOptions = Seq("-unchecked",
                               "-deprecation",
@@ -51,10 +55,9 @@ object HighHealthBuild extends Build {
 
   val hhcommon = Project("hhcommon", file("hhcommon"))
   .settings(
-    version := appVersion
+    resolvers ++= allResolvers
   )
   .settings(
-    resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
     libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies,
     libraryDependencies ++= Seq(
         "com.typesafe" % "config" % "1.2.1"
@@ -66,45 +69,63 @@ object HighHealthBuild extends Build {
     javaOptions in Test += "-Dconfig.resource=common-application.conf"
   )
 
-  val hhmetadata = play.Project("hhmetadata", appVersion, hhcommonDependencies ++ hhmethodsDependencies ++ hhmetadataDependencies, path = file("methods/hhmetadata")).settings(
-    scalacOptions ++= scalaBuildOptions,
-    sources in doc in Compile := List(),
-    javaOptions in Test += "-Dconfig.resource=metadata-application.conf"
-  ).dependsOn(hhcommon % "test->test;compile->compile").aggregate(hhcommon)
+  val hhmetadata = Project("hhmetadata", file("methods/hhmetadata")).enablePlugins(play.PlayScala).settings(
+      libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhmetadataDependencies,
+      scalacOptions ++= scalaBuildOptions,
+      sources in doc in Compile := List(),
+      javaOptions in Test += "-Dconfig.resource=metadata-application.conf"
+    )
+    .dependsOn(hhcommon % "test->test;compile->compile")
+    .aggregate(hhcommon)
 
-  val hhread = play.Project("hhread", appVersion, hhcommonDependencies ++ hhmethodsDependencies ++ hhreadDependencies, path = file("methods/hhread")).settings(
-    scalacOptions ++= scalaBuildOptions,
-    sources in doc in Compile := List(),
-    javaOptions in Test += "-Dconfig.resource=read-application.conf"
-  ).dependsOn(hhcommon % "test->test;compile->compile").aggregate(hhcommon)
+  val hhread = Project("hhread", file("methods/hhread")).enablePlugins(play.PlayScala).settings(
+      libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhreadDependencies,
+      scalacOptions ++= scalaBuildOptions,
+      sources in doc in Compile := List(),
+      javaOptions in Test += "-Dconfig.resource=read-application.conf"
+    )
+    .dependsOn(hhcommon % "test->test;compile->compile")
+    .aggregate(hhcommon)
 
-  val hhreference = play.Project("hhreference", appVersion, hhcommonDependencies ++ hhmethodsDependencies ++ hhreferenceDependencies, path = file("methods/hhreference")).settings(
-    scalacOptions ++= scalaBuildOptions,
-    sources in doc in Compile := List(),
-    javaOptions in Test += "-Dconfig.resource=reference-application.conf"
-  ).dependsOn(hhcommon % "test->test;compile->compile").aggregate(hhcommon)
+  val hhreference = Project("hhreference", file("methods/hhreference")).settings(
+      libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhreferenceDependencies,
+      scalacOptions ++= scalaBuildOptions,
+      sources in doc in Compile := List(),
+      javaOptions in Test += "-Dconfig.resource=reference-application.conf"
+    )
+    .dependsOn(hhcommon % "test->test;compile->compile")
+    .aggregate(hhcommon)
 
-  val hhvariant = play.Project("hhvariant", appVersion, hhcommonDependencies ++ hhmethodsDependencies ++ hhvariantDependencies, path = file("methods/hhvariant")).settings(
-    scalacOptions ++= scalaBuildOptions,
-    sources in doc in Compile := List(),
-    javaOptions in Test += "-Dconfig.resource=variant-application.conf"
-  ).dependsOn(hhcommon % "test->test;compile->compile").aggregate(hhcommon)
+  val hhvariant = Project("hhvariant", file("methods/hhvariant")).enablePlugins(play.PlayScala).settings(
+      libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhvariantDependencies,
+      scalacOptions ++= scalaBuildOptions,
+      sources in doc in Compile := List(),
+      javaOptions in Test += "-Dconfig.resource=variant-application.conf"
+    )
+    .dependsOn(hhcommon % "test->test;compile->compile")
+    .aggregate(hhcommon)
 
-  val hhcustom = play.Project("hhcustom", appVersion, hhcommonDependencies ++ hhmethodsDependencies ++ hhcustomDependencies, path = file("methods/hhcustom")).settings(
-    scalacOptions ++= scalaBuildOptions,
-    sources in doc in Compile := List(),
-    javaOptions in Test += "-Dconfig.resource=custom-application.conf"
-  ).dependsOn(hhcommon % "test->test;compile->compile").aggregate(hhcommon)
+  val hhcustom = Project("hhcustom", file("methods/hhcustom")).enablePlugins(play.PlayScala).settings(
+      libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhcustomDependencies,
+      scalacOptions ++= scalaBuildOptions,
+      sources in doc in Compile := List(),
+      javaOptions in Test += "-Dconfig.resource=custom-application.conf"
+    )
+    .dependsOn(hhcommon % "test->test;compile->compile")
+    .aggregate(hhcommon)
 
 
   // The default SBT project is based on the first project alphabetically. To force sbt to use this one,
   // we prefit it with 'aaa'
-  val aaaHighHealth = play.Project("high-health", appVersion, hhcommonDependencies ++ allDependencies).settings(
+  val aaaHighHealth = Project("high-health", file(".")).enablePlugins(play.PlayScala).settings(
     // This project runs both services together, which is mostly useful in development mode.
+    version := appVersion,
     organization := "med-at-scale",
     scalacOptions ++= scalaBuildOptions,
     sources in doc in Compile := List(),
-    resolvers += Resolver.mavenLocal
+    resolvers ++= allResolvers,
+    libraryDependencies ++= hhcommonDependencies ++ allDependencies,
+    libraryDependencies +=  filters
   )
   .dependsOn( hhcommon    % "test->test;compile->compile",
               hhmetadata  % "test->test;compile->compile",
@@ -120,5 +141,4 @@ object HighHealthBuild extends Build {
               hhvariant,
               hhcustom
             )
-
 }

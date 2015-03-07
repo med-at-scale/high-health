@@ -14,7 +14,7 @@ trait VariantSetProvider {
 object Sources {
 
   val `med-at-scale` =
-    new Source("s3n://med-at-scale/1000genomes/", ((i:String) => s"ALL.chr$i.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.adam/")) with DatasetProvider with VariantSetProvider {
+    new Source("s3n://med-at-scale/1000genomes/", ((i:String) => s"ALL.chr$i.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.adam")) with DatasetProvider with VariantSetProvider {
         override def datasets = List[String]("1000genomes")
 	    override def variantSetForDataset(id: String) = id match {
 	    	case "1000genomes" => {
