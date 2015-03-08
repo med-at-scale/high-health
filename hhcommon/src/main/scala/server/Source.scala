@@ -9,12 +9,16 @@ trait DatasetProvider {
 }
 trait VariantSetProvider {
 	def variantSetForDataset(id: String):Option[org.ga4gh.models.VariantSet] = None
+	// for now, say these dates are provided by a VariantSet
+	def createdDate(): Long = 0L
+    def updatedDate(): Long = 0L
 }
 
 object Sources {
 
   val `med-at-scale` =
     new Source("s3n://med-at-scale/1000genomes/", ((i:String) => s"ALL.chr$i.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.adam")) with DatasetProvider with VariantSetProvider {
+        val fmt = new java.text.SimpleDateFormat("yyyyMMdd")
         override def datasets = List[String]("1000genomes")
 	    override def variantSetForDataset(id: String) = id match {
 	    	case "1000genomes" => {
@@ -24,6 +28,8 @@ object Sources {
 	    	}
 	    	case _ => None
 	    }
+	    override def createdDate() = fmt.parse("20101123").getTime
+	    override def updatedDate() = fmt.parse("20101123").getTime
 
      }
 

@@ -23,7 +23,6 @@ import org.bdgenomics.adam.models.VariantContext
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rdd.ADAMContext
 
-
 import server.{Source, Sources}
 
 object Variants extends VariantMethods {
@@ -114,7 +113,7 @@ object Variants extends VariantMethods {
     //TODO
     //val chr = validChrs.head
     val chr = ids.head
-
+    
     val gts:RDD[Genotype] = adam.sc.adamLoad(source.chr(chr))
 
     val pageSize = request.getPageSize()
@@ -166,10 +165,11 @@ object Variants extends VariantMethods {
       val likelihoods:java.util.List[java.lang.Double] = g.genotypeLikelihoods.asScala.toList.map(x => new java.lang.Double(x.toDouble / 100)).asJava
       val v = new Variant(
         java.util.UUID.randomUUID.toString,//TODO
-        source.chr(chr),//TODO
+        //source.chr(chr),//TODO
+        chr,
         List(""), //TODO
-        0,//TODO use the date in the 1kg file name
-        0,//TODO use the date in the 1kg file name
+        source.createdDate(),//TODO use the date in the 1kg file name
+        source.updatedDate(),//TODO use the date in the 1kg file name
         chr,//TODO
         variant.start,
         variant.end,
@@ -190,7 +190,7 @@ object Variants extends VariantMethods {
            /*TODO is it pertinent ?
             * (If this field is present, this variant call's genotype ordering implies the phase of the bases and is consistent
             *  with any other variant calls on the same contig which have the same phaseset value.)*/
-           null,
+           "",
            /*
            The genotype likelihoods for this variant call. Each array entry represents how likely a specific genotype is
            for this call as log10(P(data | genotype)), analogous to the GL tag in the VCF spec.
