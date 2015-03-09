@@ -211,9 +211,17 @@ object Variants extends VariantMethods {
    * `POST /callsets/search` must accept a JSON version of `SearchCallSetsRequest`
    * as the post body and will return a JSON version of `SearchCallSetsResponse`.
    */
-  def searchCallSets(request:SearchCallSetsRequest):SearchCallSetsResponse = {
+  def searchCallSets(request:SearchCallSetsRequest): SearchCallSetsResponse = {
     //@throws AvroRemoteException, GAException
-    ???
+    val source = Sources.`med-at-scale`
+    import scala.collection.JavaConversions._
+
+    val variantSetIds: List[String] = request.getVariantSetIds()
+    val callSets = source.callSets(variantSetIds)
+
+
+    val resp = callSets.map(sets => new SearchCallSetsResponse(List(sets), "")).getOrElse(null)
+    resp
   }
 
   /**

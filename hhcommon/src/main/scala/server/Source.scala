@@ -7,6 +7,7 @@ import scala.collection.JavaConversions._
 trait DatasetProvider {
 	def datasets = List[String]("1000genomes")
 }
+
 trait VariantSetProvider {
 	def variantSetForDataset(id: String):Option[org.ga4gh.models.VariantSet] = None
 	// for now, say these dates are provided by a VariantSet
@@ -14,10 +15,15 @@ trait VariantSetProvider {
     def updatedDate(): Long = 0L
 }
 
+trait CallSetProvider {
+	def callSets(ids: List[String]): Option[org.ga4gh.models.CallSet] = None
+}
+
 object Sources {
 
   val `med-at-scale` =
-    new Source("s3n://med-at-scale/1000genomes/", ((i:String) => s"ALL.chr$i.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.adam")) with DatasetProvider with VariantSetProvider {
+    new Source("s3n://med-at-scale/1000genomes/", ((i:String) => s"ALL.chr$i.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.adam")) 
+      with DatasetProvider with VariantSetProvider with CallSetProvider {
         val fmt = new java.text.SimpleDateFormat("yyyyMMdd")
         override def datasets = List[String]("1000genomes")
 	    override def variantSetForDataset(id: String) = id match {
@@ -31,6 +37,17 @@ object Sources {
 	    override def createdDate() = fmt.parse("20101123").getTime
 	    override def updatedDate() = fmt.parse("20101123").getTime
 
+	    override def callSets(ids: List[String]) = {
+	    	val info: java.util.Map[String,java.util.List[String]] = Map[String, java.util.List[java.lang.String]]("build" -> List("human", "whatever"))
+            val callSet = new org.ga4gh.models.CallSet("id", 
+                              "name", 
+                              "sampleId", 
+                              ids, 
+                              this.createdDate(),//TODO use the date in the 1kg file name
+                              this.updatedDate(),//TODO use the date in the 1kg file name
+                              info)
+            Some(callSet)
+	    }
      }
 
 }

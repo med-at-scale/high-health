@@ -81,6 +81,7 @@ object VariantController extends Controller with CORS {
      ```
     */
   def searchVariants() = Action(BodyParsers.parse.json) { json =>
+
     //FIXME → deserves async
     val jsonStringUnsafe = Json.stringify(json.body)
     val jsonString = VariantSanitizer.searchVariantsRequest(jsonStringUnsafe)
@@ -88,9 +89,7 @@ object VariantController extends Controller with CORS {
     val searchRequest = fromJson[SearchVariantsRequest](jsonString)
     //val resp = server.VariantMethods.searchVariants(searchRequest)
     val resp = Variants.searchVariants(searchRequest)
-    Ok(resp.toString).withHeaders(
-      "content-type" -> "application/json"
-      )
+    Ok(resp.toString)
   }
 /*
 Access-Control-Allow-Headers:content-type
@@ -124,10 +123,16 @@ Server:HTTP::Server::PSGI
        → see http://www.michael-noll.com/blog/2013/03/17/reading-and-writing-avro-files-from-the-command-line/
        → see http://stackoverflow.com/questions/21977704/how-to-avro-binary-encode-the-json-string-using-apache-avro
    */
-  def searchCallSets() = Action(BodyParsers.parse.text) { json =>
-    val searchRequest = fromJson[SearchCallSetsRequest](json.body)
+  def searchCallSets() = Action(BodyParsers.parse.json) { json =>
+    val jsonStringUnsafe = Json.stringify(json.body)
+    val jsonString = VariantSanitizer.searchCallSetsRequest(jsonStringUnsafe)
+    val searchRequest = fromJson[SearchCallSetsRequest](jsonString)
     //Ok(searchRequest.getVariantSetIds.mkString("\n"))
-    NotImplemented("searchCallSets")
+    println(searchRequest)
+    val resp = Variants.searchCallSets(searchRequest)
+    Ok(resp.toString).withHeaders(
+      "content-type" -> "application/json"
+      )
   }
 
   def getCallSet(id:String) = TODO

@@ -57,5 +57,15 @@ object VariantSanitizer {
 		sanJson.as[JsValue].toString()
 	}
 
+	def searchCallSetsRequest(jsonTxt: String): String = {
+		val json: JsValue = Json.parse(jsonTxt)
+		val fields = List(
+			"pageToken" -> "int", 
+			"pageSize" -> "int",
+			"name" -> "string"
+			)
+		val sanJson = sanField(fields, json.as[JsObject])
+		sanJson.as[JsValue].toString()
+	}
 
 }
