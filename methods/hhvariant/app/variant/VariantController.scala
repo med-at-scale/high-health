@@ -89,7 +89,9 @@ object VariantController extends Controller with CORS {
     val searchRequest = fromJson[SearchVariantsRequest](jsonString)
     //val resp = server.VariantMethods.searchVariants(searchRequest)
     val resp = Variants.searchVariants(searchRequest)
-    Ok(resp.toString)
+    Ok(resp.toString).withHeaders(
+      "content-type" -> "application/json"
+      )
   }
 /*
 Access-Control-Allow-Headers:content-type
