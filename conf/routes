@@ -1,17 +1,20 @@
 # Delegate routes to sub-modules
 
-GET  /                        controllers.Application.index()
+GET  /                                 controllers.Application.index()
 
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
+GET     /                              controllers.Application.index
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file                  controllers.Assets.at(path="/public", file)
 
+# CORS requests
+OPTIONS /                              controllers.Application.CORSoption(path="")
+OPTIONS /*path                         controllers.Application.CORSoption(path)
 
 
 # ->  / common.Routes
@@ -23,5 +26,7 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 # ->  / hhreference.Routes
 
 ->  / hhvariant.Routes
+
+->  / hhbeacon.Routes
 
 ->  / hhcustom.Routes
