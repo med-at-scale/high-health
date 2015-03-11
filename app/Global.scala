@@ -4,21 +4,6 @@ import play.api.mvc._
 import play.api.http.HeaderNames
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-//object CorsFilter extends Filter {
-//  import play.api.libs.concurrent.Execution.Implicits.defaultContext
-//  def apply(next: (RequestHeader) => Result)(rh: RequestHeader) = {
-//
-//    def cors(result: PlainResult): Result = {
-//      result.withHeaders( "Access-Control-Allow-Origin" -> "*")
-//    }
-//
-//    next(rh) match {
-//      case plain: PlainResult => cors(plain)
-//      case async: AsyncResult => async.transform(cors)
-//    }
-//  }
-//}
-//
 
 object Global extends WithFilters(CorsFilter) with GlobalSettings {
 
@@ -33,6 +18,9 @@ object Global extends WithFilters(CorsFilter) with GlobalSettings {
     //TODO if variants plugin/module/methods available then
     server.variant.VariantServer.start
     Logger.warn("Variants server started")
+
+    server.beacon.BeaconServer.start("v0.5.1")
+    Logger.warn("Beacon server started")
   }
 
   override def onStop(app: Application) {
@@ -44,6 +32,9 @@ object Global extends WithFilters(CorsFilter) with GlobalSettings {
     //TODO if variants plugin/module/methods available then
     server.variant.VariantServer.stop
     Logger.warn("Variants server stopped")
+
+    server.beacon.BeaconServer.stop("v0.5.1")
+    Logger.warn("Beacon server stopped")
   }
 
 }

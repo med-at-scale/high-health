@@ -1,0 +1,3 @@
+POST /:version/beacon                           controllers.beacon.BeaconController.index(version:String)
+
+# ->  / common.Routes

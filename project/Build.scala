@@ -31,8 +31,9 @@ object HighHealthBuild extends Build {
   val hhreferenceDependencies = Seq()
   val hhvariantDependencies   = Seq()
   val hhcustomDependencies    = Seq()
+  val hhbeaconDependencies    = Seq()
 
-  val allDependencies = hhmethodsDependencies ++ hhmetadataDependencies ++ hhreadDependencies ++ hhreferenceDependencies ++ hhvariantDependencies ++ hhcustomDependencies
+  val allDependencies = hhmethodsDependencies ++ hhmetadataDependencies ++ hhreadDependencies ++ hhreferenceDependencies ++ hhvariantDependencies ++ hhbeaconDependencies ++ hhcustomDependencies
 
   val allResolvers = Seq(
     Resolver.mavenLocal,
@@ -105,6 +106,15 @@ object HighHealthBuild extends Build {
     .dependsOn(hhcommon % "test->test;compile->compile")
     .aggregate(hhcommon)
 
+  val hhbeacon = Project("hhbeacon", file("methods/hhbeacon")).enablePlugins(play.PlayScala).settings(
+      libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhbeaconDependencies,
+      scalacOptions ++= scalaBuildOptions,
+      sources in doc in Compile := List(),
+      javaOptions in Test += "-Dconfig.resource=beacon-application.conf"
+    )
+    .dependsOn(hhcommon % "test->test;compile->compile")
+    .aggregate(hhcommon)
+
   val hhcustom = Project("hhcustom", file("methods/hhcustom")).enablePlugins(play.PlayScala).settings(
       libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhcustomDependencies,
       scalacOptions ++= scalaBuildOptions,
@@ -132,6 +142,7 @@ object HighHealthBuild extends Build {
               hhread      % "test->test;compile->compile",
               hhreference % "test->test;compile->compile",
               hhvariant   % "test->test;compile->compile",
+              hhbeacon    % "test->test;compile->compile",
               hhcustom    % "test->test;compile->compile"
             )
   .aggregate( hhcommon,
@@ -139,6 +150,7 @@ object HighHealthBuild extends Build {
               hhread,
               hhreference,
               hhvariant,
+              hhbeacon,
               hhcustom
             )
 }

@@ -21,31 +21,9 @@ import org.ga4gh.methods.{SearchCallSetsRequest, SearchVariantsRequest, SearchVa
 
 import server.variant.Variants
 import sanitizer.variant.VariantSanitizer
-import server.CORS
 
-object VariantController extends Controller with CORS {
-
-  // API is http://avro.apache.org/docs/current/api/java/org/apache/avro/io/package-summary.html
-  def fromJson[T:TypeTag](json:String):T = {
-    val wt = implicitly[TypeTag[T]]
-    val clazz = wt.mirror.runtimeClass(wt.tpe)
-
-    val fld = clazz.getDeclaredField("SCHEMA$")
-    val schema:Schema = fld.get(null).asInstanceOf[Schema]
-
-    val input:InputStream = new ByteArrayInputStream(json.getBytes())
-    val din:DataInputStream = new DataInputStream(input)
-
-    val decoder:Decoder = DecoderFactory.get().jsonDecoder(schema, din)
-
-    val reader:DatumReader[T] = new SpecificDatumReader(schema)
-    val datum:T = reader.read(null.asInstanceOf[T], decoder)
-    datum
-  }
-
-  def CORSoption(path: String) = CORSAction("GET,POST,PUT,DELETE,OPTIONS,PATCH,HEAD") { implicit request =>
-    Ok("")
-  }
+object VariantController extends Controller {
+  import server.AvroHelper.fromJson
 
   def searchVariantSets() = Action(BodyParsers.parse.json) { json =>
     //FIXME → deserves async
@@ -92,24 +70,6 @@ object VariantController extends Controller with CORS {
     Ok(resp.toString).withHeaders(
       "content-type" -> "application/json"
       )
-  }
-/*
-Access-Control-Allow-Headers:content-type
-Access-Control-Allow-Headers:accept
-Access-Control-Allow-Methods:OPTIONS
-Access-Control-Allow-Methods:GET
-Access-Control-Allow-Methods:POST
-Access-Control-Allow-Origin:*
-Access-Control-Max-Age:10
-Content-Length:0
-Content-Type:text/plain
-Date:Wed, 04 Mar 2015 23:44:00 GMT
-Server:HTTP::Server::PSGI
-*/
-
-  def searchVariantsOpts() = Action { implicit request =>
-    println("Options on variants search")
-    Ok("")
   }
   /*
       Test by POSTing the below json string on http://localhost:9000/callsets/search
