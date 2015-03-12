@@ -1,4 +1,8 @@
+POST    /referencesets/search            controllers.reference.ReferenceController.searchReferenceSets()
 
+GET     /referencesets/:id               controllers.reference.ReferenceController.getReferenceSet(id: String)
 
+# javascript router
+GET /javascriptRoutes                  controllers.reference.ReferenceController.javascriptRoutes
 
 # ->  / common.Routes

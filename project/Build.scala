@@ -88,7 +88,7 @@ object HighHealthBuild extends Build {
     .dependsOn(hhcommon % "test->test;compile->compile")
     .aggregate(hhcommon)
 
-  val hhreference = Project("hhreference", file("methods/hhreference")).settings(
+  val hhreference = Project("hhreference", file("methods/hhreference")).enablePlugins(play.PlayScala).settings(
       libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhreferenceDependencies,
       scalacOptions ++= scalaBuildOptions,
       sources in doc in Compile := List(),

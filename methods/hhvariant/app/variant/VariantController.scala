@@ -31,11 +31,11 @@ object VariantController extends Controller {
     val jsonString = VariantSanitizer.searchVariantSetsRequest(jsonStringUnsafe)
     println(jsonString)
     val searchRequest = fromJson[SearchVariantSetsRequest](jsonString)
-    //val resp = server.VariantMethods.searchVariants(searchRequest)
     val resp = Variants.searchVariantSets(searchRequest)
     Ok(resp.toString).withHeaders(
       "content-type" -> "application/json"
       )
+    //Ok("")
   }
 
 //  def searchVariantSetsOpts() = isPositiveOnOption
@@ -65,7 +65,7 @@ object VariantController extends Controller {
     val jsonString = VariantSanitizer.searchVariantsRequest(jsonStringUnsafe)
     println(jsonString)
     val searchRequest = fromJson[SearchVariantsRequest](jsonString)
-    //val resp = server.VariantMethods.searchVariants(searchRequest)
+
     val resp = Variants.searchVariants(searchRequest)
     Ok(resp.toString).withHeaders(
       "content-type" -> "application/json"

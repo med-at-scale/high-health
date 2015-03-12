@@ -19,6 +19,9 @@ object Global extends WithFilters(CorsFilter) with GlobalSettings {
     server.variant.VariantServer.start
     Logger.warn("Variants server started")
 
+    server.reference.ReferenceServer.start
+    Logger.warn("References server started")
+
     server.beacon.BeaconServer.start("v0.5.1")
     Logger.warn("Beacon server started")
   }
@@ -32,6 +35,9 @@ object Global extends WithFilters(CorsFilter) with GlobalSettings {
     //TODO if variants plugin/module/methods available then
     server.variant.VariantServer.stop
     Logger.warn("Variants server stopped")
+
+    server.reference.ReferenceServer.stop
+    Logger.warn("References server stopped")
 
     server.beacon.BeaconServer.stop("v0.5.1")
     Logger.warn("Beacon server stopped")

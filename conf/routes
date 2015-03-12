@@ -23,7 +23,7 @@ OPTIONS /*path                         controllers.Application.CORSoption(path)
 
 # ->  / hhread.Routes
 
-# ->  / hhreference.Routes
+->  / hhreference.Routes
 
 ->  / hhvariant.Routes
 
