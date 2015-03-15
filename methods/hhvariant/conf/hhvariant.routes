@@ -1,6 +1,8 @@
-POST    /variantsets/search            controllers.variant.VariantController.searchVariantSets()
+GET  /variant                          controllers.variant.VariantController.index()
 
-POST    /variants/search               controllers.variant.VariantController.searchVariants()
+POST /variantsets/search               controllers.variant.VariantController.searchVariantSets()
+
+POST /variants/search                  controllers.variant.VariantController.searchVariants()
 
 POST /callsets/search                  controllers.variant.VariantController.searchCallSets()
 
@@ -9,4 +11,8 @@ GET  /callsets/:id                     controllers.variant.VariantController.get
 # javascript router
 GET /javascriptRoutes                  controllers.variant.VariantController.javascriptRoutes
 
-# ->  / common.Routes
+# assets
+GET     /assets/*file                  controllers.variant.Assets.at(path="/public", file)
+
+
+->  / hhcommon.Routes
