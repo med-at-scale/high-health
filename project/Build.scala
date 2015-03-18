@@ -54,7 +54,7 @@ object HighHealthBuild extends Build {
                               "-Xmax-classfile-name",
                               "140")
 
-  val hhcommon = Project("hhcommon", file("hhcommon"))
+  val hhcommon = Project("hhcommon", file("hhcommon")).enablePlugins(play.PlayScala)
   .settings(
     resolvers ++= allResolvers
   )

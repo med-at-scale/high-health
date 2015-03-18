@@ -1,0 +1,6 @@
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                  controllers.common.Assets.at(path="/public", file)
+
+# CORS requests
+OPTIONS /                              controllers.common.CORS.option(path="")
+OPTIONS /*path                         controllers.common.CORS.option(path)
