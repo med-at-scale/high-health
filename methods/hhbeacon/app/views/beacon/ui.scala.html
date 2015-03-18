@@ -1,0 +1,17 @@
+@(version:String)(content:Html)
+
+@import helper._
+
+@main("Beacon") {
+
+<div class="hero-unit">
+  <h1>Beacon simple query tool</h1>
+  <p>Simpler than the Avro one for human</p>
+</div>
+
+<div class="row-fluid">
+  <div class="span6 offset3">
+  @content
+  </div>
+</div>
+}

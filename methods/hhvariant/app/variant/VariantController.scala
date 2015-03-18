@@ -25,6 +25,11 @@ import sanitizer.variant.VariantSanitizer
 object VariantController extends Controller {
   import server.AvroHelper.fromJson
 
+  def index = Action {
+    Ok(views.html.variant.index())
+  }
+
+
   def searchVariantSets() = Action(BodyParsers.parse.json) { json =>
     //FIXME → deserves async
     val jsonStringUnsafe = Json.stringify(json.body)
@@ -110,3 +115,5 @@ object VariantController extends Controller {
   }
 
 }
+
+object Assets extends controllers.AssetsBuilder

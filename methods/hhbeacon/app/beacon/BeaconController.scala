@@ -8,6 +8,8 @@ import scala.collection.JavaConversions._
 import scala.reflect.runtime.universe._
 
 import play.api._
+import play.api.data._
+import play.api.data.Forms._
 import play.api.libs.json._
 import play.api.mvc._
 
@@ -26,6 +28,10 @@ import sanitizer.beacon.BeaconSanitizer
 object BeaconController extends Controller {
   import server.AvroHelper.fromJson
 
+  def execute(version:String, request:BEACONRequest):BEACONResponse =
+    GA4GHVersions.named(version) match {
+      case GA4GHVersions.v0_5_1 => BeaconV0_5_1.index(request)
+    }
 
   /**
      Try with
@@ -50,13 +56,48 @@ object BeaconController extends Controller {
     val jsonString =  jsonStringUnsafe//sanitize?
     println(jsonString)
     val request = fromJson[BEACONRequest](jsonString)
-    //val resp = server.VariantMethods.searchVariants(searchRequest)
-    val respString:String =  GA4GHVersions.named(version) match {
-                              case GA4GHVersions.v0_5_1 => BeaconV0_5_1.index(request).toString
-                            }
-
-    Ok(respString).withHeaders(
+    val response = execute(version, request)
+    Ok(response.toString).withHeaders(
       "content-type" -> "application/json"
     )
   }
+
+  case class FlatBeacon(populationId:String, referenceVersion:String, chromosome:String, coordinate:Long, allele:String) {
+    def validate = {
+      //nothing atm
+      true
+    }
+
+    def toAvro = new BEACONRequest(populationId, referenceVersion, chromosome, coordinate, allele)
+  }
+
+  val beaconForm = Form(
+    mapping(
+      "populationId"     → text,
+      "referenceVersion" → text,
+      "chromosome"       → text,
+      "coordinate"       → longNumber,
+      "allele"           → text
+    )(FlatBeacon.apply)(FlatBeacon.unapply) verifying ("FlatBeaconing with bad informations", flatBeacon => flatBeacon.validate)
+  )
+
+  //http://localhost:9000/v0.5.1/beacon/ui
+  def ui(version:String) = Action {
+    Ok(views.html.beacon.query(version))
+  }
+
+  def fromUI(version:String) = Action { implicit request =>
+    beaconForm.bindFromRequest.fold(
+      formWithErrors => {
+        Logger.error(formWithErrors.errorsAsJson.toString)
+        BadRequest("There is something bad!")
+      },
+      flatBeacon => {
+        val request = flatBeacon.toAvro
+        val response = execute(version, request)
+        Ok(views.html.beacon.result(version, flatBeacon, (response.exists, response.frequency)))
+      }
+    )
+  }
+
 }
