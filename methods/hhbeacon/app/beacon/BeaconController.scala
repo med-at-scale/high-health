@@ -45,6 +45,7 @@ object BeaconController extends Controller {
      ```
   */
   def index(version:String) = Action(BodyParsers.parse.json) { json =>
+    /* temp fix to get ga4gh master compiling 
     //FIXME → deserves async
     val jsonStringUnsafe = Json.stringify(json.body)
     val jsonString =  jsonStringUnsafe//sanitize?
@@ -58,5 +59,6 @@ object BeaconController extends Controller {
     Ok(respString).withHeaders(
       "content-type" -> "application/json"
     )
+*/ Ok("")
   }
 }

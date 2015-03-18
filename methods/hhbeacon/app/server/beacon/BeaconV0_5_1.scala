@@ -50,8 +50,9 @@ object BeaconV0_5_1 extends BEACON {
   // → care!
 
   @transient lazy val adam = server.SparkProvider.adamContext
-
+/* deactivate to get master 0.6.0 compiling
   def index(request:BEACONRequest):BEACONResponse = {
     new BEACONResponse(true, 1)
   }
+  */
 }

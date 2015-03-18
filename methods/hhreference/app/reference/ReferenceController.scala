@@ -45,6 +45,20 @@ object ReferenceController extends Controller {
     )
   }
 
+  def searchReferences() = Action(BodyParsers.parse.json) { json =>
+    //FIXME → deserves async
+    val jsonStringUnsafe = Json.stringify(json.body)
+    println(jsonStringUnsafe)
+    val jsonString = ReferenceSanitizer.searchReferencesRequest(jsonStringUnsafe)
+    println(jsonString)
+    val searchRequest = fromJson[SearchReferencesRequest](jsonString)
+    //val resp = server.ReferenceMethods.searchReferences(searchRequest)
+    val resp = References.searchReferences(searchRequest)
+    Ok(resp.toString).withHeaders(
+      "content-type" -> "application/json"
+      )
+  }
+
   def javascriptRoutes = Action { implicit request =>
     import controllers.reference.routes._
     Ok(

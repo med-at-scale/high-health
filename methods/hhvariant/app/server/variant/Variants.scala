@@ -148,12 +148,30 @@ object Variants extends VariantMethods {
       //             info:Map[String, List[String]],
       //             calls:List[org.ga4gh.models.Call])
 
-      // new Call(callSetId:String,
-      //          callSetName:String,
-      //          genotype:List[Integer],
-      //          phaseset:String,
-      //          genotypeLikelihood:List[Double],
-      //          info:Map[String, List[String]])
+      // new Variant(java.lang.String id, 
+      //             java.lang.String variantSetId, 
+      //             java.util.List<java.lang.String> names, 
+      //             java.lang.Long created, 
+      //             java.lang.Long updated, 
+      //             java.lang.String referenceName, 
+      //             java.lang.Long start, 
+      //             java.lang.Long end, 
+      //             java.lang.String referenceBases, 
+      //             java.util.List<java.lang.String> alternateBases, 
+      //             java.util.List<java.lang.String> alleleIds, 
+      //             java.util.Map<java.lang.String,java.util.List<java.lang.String>> info, 
+      //             java.util.List<org.ga4gh.models.Call> calls)
+
+      // new Call(
+      //     java.lang.String callSetId, 
+      //     java.lang.String callSetName, 
+      //     java.lang.String variantId, 
+      //     java.util.List<java.lang.Integer> genotype, 
+      //     java.lang.Object phaseset, 
+      //     java.util.List<java.lang.Double> genotypeLikelihood, 
+      //     java.util.Map<java.lang.String,
+      //     java.util.List<java.lang.String>> info
+      // )
 
       val alleles:List[Int] = g.alleles.asScala.toList.map {
         case GenotypeAllele.Ref       => 0
@@ -175,10 +193,13 @@ object Variants extends VariantMethods {
         variant.end,
         variant.referenceAllele,
         List(variant.alternateAllele), //TODO → a list? in ADAM, there a single string
+        List(""),    ///TODO allelesIds
         Map.empty[String, java.util.List[String]].asJava,//TODO
+
         List(new Call(
-          chr,
-          "1000genomes",
+          "callSetID",    /// callsetID
+          "1000genomes",           /// callsetname
+          "Variant_chr1",    // variantId
           /*TODO genotype → The genotype of this variant call. Each value represents either the value of the referenceBases
            field or is a 1-based index into alternateBases.
            If a variant had a referenceBases field of "T", an alternateBases value of ["A", "C"],
@@ -232,4 +253,13 @@ object Variants extends VariantMethods {
     //@throws AvroRemoteException, GAException
     ???
   }
+  def getAllele(x$1: String): org.ga4gh.models.Allele = ???
+  def getVariant(x$1: String): org.ga4gh.models.Variant = ???
+  def getVariantSetSequence(x$1: String,x$2: String): org.ga4gh.models.Segment = ???
+  def searchAlleleCalls(x$1: org.ga4gh.methods.SearchAlleleCallsRequest): org.ga4gh.methods.SearchAlleleCallsResponse = ???
+  def searchAlleles(x$1: org.ga4gh.methods.SearchAllelesRequest): org.ga4gh.methods.SearchAllelesResponse = ???
+  def searchCalls(x$1: org.ga4gh.methods.SearchCallsRequest): org.ga4gh.methods.SearchCallsResponse = ???
+  def searchVariantSetSequences(x$1: String,x$2: org.ga4gh.methods.SearchVariantSetSequencesRequest): org.ga4gh.methods.SearchVariantSetSequencesResponse = ???
+
 }
+

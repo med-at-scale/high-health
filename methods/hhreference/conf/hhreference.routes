@@ -2,6 +2,9 @@ POST    /referencesets/search            controllers.reference.ReferenceControll
 
 GET     /referencesets/:id               controllers.reference.ReferenceController.getReferenceSet(id: String)
 
+POST    /references/search               controllers.reference.ReferenceController.searchReferences()
+
+
 # javascript router
 GET /javascriptRoutes                  controllers.reference.ReferenceController.javascriptRoutes
 

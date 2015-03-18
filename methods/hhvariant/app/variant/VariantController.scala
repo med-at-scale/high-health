@@ -65,9 +65,13 @@ object VariantController extends Controller {
     val jsonString = VariantSanitizer.searchVariantsRequest(jsonStringUnsafe)
     println(jsonString)
     val searchRequest = fromJson[SearchVariantsRequest](jsonString)
-
+/*
     val resp = Variants.searchVariants(searchRequest)
     Ok(resp.toString).withHeaders(
+      "content-type" -> "application/json"
+      )
+*/
+    Ok("")withHeaders(
       "content-type" -> "application/json"
       )
   }

@@ -13,7 +13,7 @@ object HighHealthBuild extends Build {
 
   val hhcommonDependencies = Seq(
     // Add your project dependencies here,
-    "med-at-scale"        %  "ga4gh-model-java" % "0.1.0-SNAPSHOT"   excludeAll(ExclusionRule("org.mortbay.jetty"), ExclusionRule("org.eclipse.jetty")),
+    "med-at-scale"        %  "ga4gh-model-java" % "0.1.1-SNAPSHOT"   excludeAll(ExclusionRule("org.mortbay.jetty"), ExclusionRule("org.eclipse.jetty")),
     "org.apache.avro"     %  "avro-ipc"         % "1.7.6"  excludeAll(ExclusionRule("org.mortbay.jetty"), ExclusionRule("org.eclipse.jetty")),
     "com.typesafe.play"   %% "play"             % "2.3.7"  excludeAll(ExclusionRule("com.typesafe.akka"))
     // can be a better option for CORS → "com.github.dwhjames" %% "play-cors"        % "0.1.0"  excludeAll(ExclusionRule("com.typesafe.akka"))
