@@ -5,7 +5,7 @@ import server.Sanitizer
 
 object VariantSanitizer extends Sanitizer {
 
-	def searchVariantsRequest(jsonTxt: String): String = {
+    def searchVariantsRequest(jsonTxt: String): String = {
 		val json: JsValue = Json.parse(jsonTxt)
 		val fields = List(
 			("pageSize",     () => Json.obj("pageSize" -> JsNull),   (j: JsValue) => Json.obj("pageSize"  -> unionField(j, "int"))),
