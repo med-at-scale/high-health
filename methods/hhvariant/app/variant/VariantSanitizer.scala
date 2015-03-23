@@ -1,53 +1,46 @@
 package sanitizer.variant
 
 import play.api.libs.json._
-import server.sanitizer
+import server.Sanitizer
 
 object VariantSanitizer extends Sanitizer {
 
-
 	def searchVariantsRequest(jsonTxt: String): String = {
+		val json: JsValue = Json.parse(jsonTxt)
 		val fields = List(
-			"pageToken" -> "int", 
-			"pageSize" -> "int",
-			"referenceId" -> "string", 
-			"referenceName" -> "string",
-			"callSetIds" -> "???",
-			"variantName" -> "string")
+			("pageSize",     () => Json.obj("pageSize" -> JsNull),   (j: JsValue) => Json.obj("pageSize"  -> unionField(j, "int"))),
+			("pageToken",    () => Json.obj("pageToken" -> JsNull),  (j: JsValue) => Json.obj("pageToken" -> unionField(j, "string"))),
+			("referenceId",  () => Json.obj("referenceId" -> JsNull),(j: JsValue) => Json.obj("referenceId" -> unionField(j, "string"))),
+			("referenceName",  () => Json.obj("referenceName" -> JsNull),(j: JsValue) => Json.obj("referenceName" -> unionField(j, "string"))),
+			("variantName",  () => Json.obj("variantName" -> JsNull),(j: JsValue) => Json.obj("variantName" -> unionField(j, "string"))),
+			("callSetIds", () => Json.obj("callSetIds" -> JsNull), (j: JsValue) => j.as[JsObject])
+		)
 
-		sanitize(jsonTxt, fields)
+		val sanJson = sanField(fields, json.as[JsObject])
+		sanJson.as[JsValue].toString()
 	}
 
 	def searchVariantSetsRequest(jsonTxt: String): String = {
 		val json: JsValue = Json.parse(jsonTxt)
-		val pageSize = json \ "pageSize" match {
-			case _: JsUndefined => Some(Json.obj("pageSize" -> JsNull))
-			case jsv: JsValue => None
-		}
-		val pageToken = json \ "pageToken" match {
-			case _: JsUndefined => Some(Json.obj("pageToken" -> JsNull))
-			case jsv: JsValue => None
-		}
-		val psJson = pageSize.map( jo => json.as[JsObject] ++ jo )
-		                      .getOrElse(json.as[JsObject])
+		val fields = List(
+			("pageSize",     () => Json.obj("pageSize" -> JsNull),   (j: JsValue) => Json.obj("pageSize"  -> unionField(j, "int"))),
+			("pageToken",    () => Json.obj("pageToken" -> JsNull),  (j: JsValue) => Json.obj("pageToken" -> unionField(j, "string")))
+		)
 
-        val sanJson = pageToken.map( jo => psJson ++ jo )
-		                      .getOrElse(psJson.as[JsObject])
-		sanJson.as[JsValue].toString()
-
-		sanitize(jsonTxt, fields)
+		val sanJson = sanField(fields, json.as[JsObject])
+		sanJson.as[JsValue].toString()		
 	}
 
 	def searchCallSetsRequest(jsonTxt: String): String = {
 		val json: JsValue = Json.parse(jsonTxt)
 		val fields = List(
-			"pageToken" -> "int", 
-			"pageSize" -> "int",
-			"name" -> "string"
-			)
+			("name",     () => Json.obj("name" -> JsNull),   (j: JsValue) => Json.obj("name"  -> unionField(j, "string"))),
+			("pageSize",     () => Json.obj("pageSize" -> JsNull),   (j: JsValue) => Json.obj("pageSize"  -> unionField(j, "int"))),
+			("pageToken",    () => Json.obj("pageToken" -> JsNull),  (j: JsValue) => Json.obj("pageToken" -> unionField(j, "string")))
+		)
+
 		val sanJson = sanField(fields, json.as[JsObject])
-		sanJson.as[JsValue].toString()
-		sanitize(jsonTxt, fields)
+		sanJson.as[JsValue].toString()		
 	}
 
 }

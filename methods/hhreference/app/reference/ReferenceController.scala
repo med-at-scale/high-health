@@ -59,6 +59,13 @@ object ReferenceController extends Controller {
       )
   }
 
+  def getReference(id: String) = Action {
+    val resp = References.getReference(id)
+    Ok(resp.toString).withHeaders(
+      "content-type" -> "application/json"
+    )
+  }
+
   def javascriptRoutes = Action { implicit request =>
     import controllers.reference.routes._
     Ok(

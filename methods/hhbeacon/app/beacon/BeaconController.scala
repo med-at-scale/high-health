@@ -27,12 +27,12 @@ import sanitizer.beacon.BeaconSanitizer
 
 object BeaconController extends Controller {
   import server.AvroHelper.fromJson
-
+/*
   def execute(version:String, request:BEACONRequest):BEACONResponse =
     GA4GHVersions.named(version) match {
       case GA4GHVersions.v0_5_1 => BeaconV0_5_1.index(request)
     }
-
+*/
   /**
      Try with
      ```
@@ -50,8 +50,8 @@ object BeaconController extends Controller {
        'http://localhost:9000/v0.5.1/beacon'
      ```
   */
+  /*
   def index(version:String) = Action(BodyParsers.parse.json) { json =>
-    /* temp fix to get ga4gh master compiling 
     //FIXME → deserves async
     val jsonStringUnsafe = Json.stringify(json.body)
     val jsonString =  jsonStringUnsafe//sanitize?
@@ -61,7 +61,6 @@ object BeaconController extends Controller {
     Ok(response.toString).withHeaders(
       "content-type" -> "application/json"
     )
-*/ Ok("")
   }
 
   case class FlatBeacon(populationId:String, referenceVersion:String, chromosome:String, coordinate:Long, allele:String) {
@@ -69,8 +68,8 @@ object BeaconController extends Controller {
       //nothing atm
       true
     }
-
-    def toAvro = new BEACONRequest(populationId, referenceVersion, chromosome, coordinate, allele)
+// remove references to Beacon on master because 0.5.1 ga4gh version
+    def toAvro = ??? //new BEACONRequest(populationId, referenceVersion, chromosome, coordinate, allele)
   }
 
   val beaconForm = Form(
@@ -101,5 +100,5 @@ object BeaconController extends Controller {
       }
     )
   }
-
+*/
 }

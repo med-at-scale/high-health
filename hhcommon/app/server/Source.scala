@@ -21,6 +21,7 @@ trait CallSetProvider {
 
 trait ReferenceProvider {
 	def getReferenceByMd5(md5: String): Option[org.ga4gh.models.Reference] = None
+	def getReferenceById(id: String): Option[org.ga4gh.models.Reference] = None
 }
 
 object Sources {
@@ -69,13 +70,16 @@ object Sources {
 	    	    "sourceURI", //sourceURI
 	    	    List[String](), //sourceAccessions
 	    	    false, //isDerived
-	    	    0.0F, //source divergence
+	    	    null, //source divergence
 	    	    9606)  //ncbi taxonid
 	    	  )
 	    	case _ => None
 	    }
-     }
-
+    	override def getReferenceById(id: String): Option[org.ga4gh.models.Reference] = id match {
+        	case "id" => getReferenceByMd5("1b22b98cdeb4a9304cb5d48026a85128")
+    	    case _ => None
+        }
+    }
 }
 
 class Source(ref:String, pattern:String=>String) {

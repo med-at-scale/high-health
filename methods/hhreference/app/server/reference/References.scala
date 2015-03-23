@@ -79,7 +79,13 @@ object References extends ReferenceMethods {
     new SearchReferenceSetsResponse(refSets, nextPageToken)
   }
 
-  def getReference(x$1: String): org.ga4gh.models.Reference = ???
+  def getReference(id: String): org.ga4gh.models.Reference = {
+    val source = Sources.`med-at-scale`
+    val reference = source.getReferenceById(id)
+    reference.getOrElse(null)
+  }
+
+
   def getReferenceBases(x$1: String,x$2: org.ga4gh.methods.ListReferenceBasesRequest): org.ga4gh.methods.ListReferenceBasesResponse = ???
 
   def getReferenceSet(acc: String): org.ga4gh.models.ReferenceSet = {

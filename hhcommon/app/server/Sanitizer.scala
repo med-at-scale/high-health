@@ -24,7 +24,7 @@ trait Sanitizer {
 		case Nil => json
 	}
 
-	def sanitize(jsonTxt: String, fields: List(String, () => JsObject, (JsValue) => JsObject)): String = {
+	def sanitize(jsonTxt: String, fields: List[(String, () => JsObject, (JsValue) => JsObject)]): String = {
 		val json: JsValue = Json.parse(jsonTxt)
 		val sanJson = sanField(fields, json.as[JsObject])
 		sanJson.as[JsValue].toString()
