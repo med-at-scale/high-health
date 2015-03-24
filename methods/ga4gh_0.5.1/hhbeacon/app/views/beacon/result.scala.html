@@ -1,0 +1,21 @@
+@(version:String, query:controllers.beacon.BeaconController.FlatBeacon, result:(Boolean, Long))
+
+@import helper._
+
+@ui(version) {
+
+  @if(result._1){
+    <h3>Found @{result._2} instances of the following beacon</h3>
+  }else{
+    <h3>Didn't found the following beacon</h3>
+  }
+  <div>
+    <ul style="list-type: none">
+      <li>Population Id: @{query.populationId}</li>
+      <li>Reference Version: @{query.referenceVersion}</li>
+      <li>Chromosome: @{query.chromosome}</li>
+      <li>Coordinate: @{query.coordinate}</li>
+      <li>Allele: @{query.allele}</li>
+    </ul>
+  <div>
+}
