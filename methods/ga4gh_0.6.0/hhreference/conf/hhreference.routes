@@ -1,0 +1,12 @@
+POST    /referencesets/search            controllers.reference.ReferenceController.searchReferenceSets()
+
+GET     /referencesets/:id               controllers.reference.ReferenceController.getReferenceSet(id: String)
+
+POST    /references/search               controllers.reference.ReferenceController.searchReferences()
+
+GET    /references/:id                   controllers.reference.ReferenceController.getReference(id: String)
+
+# javascript router
+GET /javascriptRoutes                  controllers.reference.ReferenceController.javascriptRoutes
+
+# ->  / common.Routes

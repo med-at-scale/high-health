@@ -1,0 +1,7 @@
+# CUSTOM
+GET /custom/samples/count/:chr      controllers.custom.CustomController.countSamples(chr:String)
+GET /custom/counts/:chr             controllers.custom.CustomController.countsOnChromosome(chr:String)
+GET /custom/head/:chr               controllers.custom.CustomController.head(chr:String, size:Int)
+
+
+# ->  / common.Routes

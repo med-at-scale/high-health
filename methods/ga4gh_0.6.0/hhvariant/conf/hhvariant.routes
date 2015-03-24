@@ -1,0 +1,18 @@
+GET  /variant                          controllers.variant.VariantController.index()
+
+POST /variantsets/search               controllers.variant.VariantController.searchVariantSets()
+
+POST /variants/search                  controllers.variant.VariantController.searchVariants()
+
+POST /callsets/search                  controllers.variant.VariantController.searchCallSets()
+
+GET  /callsets/:id                     controllers.variant.VariantController.getCallSet(id:String)
+
+# javascript router
+GET /javascriptRoutes                  controllers.variant.VariantController.javascriptRoutes
+
+# assets
+GET     /assets/*file                  controllers.variant.Assets.at(path="/public", file)
+
+
+->  / hhcommon.Routes
