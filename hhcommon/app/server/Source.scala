@@ -19,11 +19,16 @@ trait CallSetProvider {
 	def callSets(ids: List[String]): Option[org.ga4gh.models.CallSet] = None
 }
 
+trait ReferenceProvider {
+	def getReferenceByMd5(md5: String): Option[org.ga4gh.models.Reference] = None
+	def getReferenceById(id: String): Option[org.ga4gh.models.Reference] = None
+}
+
 object Sources {
 
   val `med-at-scale` =
     new Source("s3n://med-at-scale/1000genomes/", ((i:String) => s"ALL.chr$i.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.adam")) 
-      with DatasetProvider with VariantSetProvider with CallSetProvider {
+      with DatasetProvider with VariantSetProvider with CallSetProvider with ReferenceProvider {
         val fmt = new java.text.SimpleDateFormat("yyyyMMdd")
         override def datasets = List[String]("1000genomes")
 	    override def variantSetForDataset(id: String) = id match {
@@ -48,8 +53,33 @@ object Sources {
                               info)
             Some(callSet)
 	    }
-     }
+	    override def getReferenceByMd5(md5: String): Option[org.ga4gh.models.Reference] = md5 match {
+	    	case "1b22b98cdeb4a9304cb5d48026a85128" => 
+	    	  val segment = new org.ga4gh.models.Segment(
+	    	  	new org.ga4gh.models.Position("chr1", "id", 0L, org.ga4gh.models.Strand.POS_STRAND), 
+	    	  	249250621L, 
+	    	  	new org.ga4gh.models.Position("chr1", "id", 0L, org.ga4gh.models.Strand.POS_STRAND), 
+	    	  	new org.ga4gh.models.Position("chr1", "id", 0L, org.ga4gh.models.Strand.POS_STRAND))
 
+	    	  Some(new org.ga4gh.models.Reference(
+	    		segment,//org.ga4gh.models.Segment segment, // segment
+	    	    "id",  // id
+	    	    249250621L, // length
+	    	    "1b22b98cdeb4a9304cb5d48026a85128", //md5
+	    	    "1", //name
+	    	    "sourceURI", //sourceURI
+	    	    List[String](), //sourceAccessions
+	    	    false, //isDerived
+	    	    null, //source divergence
+	    	    9606)  //ncbi taxonid
+	    	  )
+	    	case _ => None
+	    }
+    	override def getReferenceById(id: String): Option[org.ga4gh.models.Reference] = id match {
+        	case "id" => getReferenceByMd5("1b22b98cdeb4a9304cb5d48026a85128")
+    	    case _ => None
+        }
+    }
 }
 
 class Source(ref:String, pattern:String=>String) {

@@ -1,71 +1,46 @@
 package sanitizer.variant
 
 import play.api.libs.json._
+import server.Sanitizer
 
-object VariantSanitizer {
+object VariantSanitizer extends Sanitizer {
 
-	// reccusrive function to add-up missing fields
-	def sanField(fields: List[(String, String)], json: JsObject): JsObject = fields match {
-		case head :: tail => {
-			val tmp = json \ head._1 match {
-				case _: JsUndefined => Some(Json.obj(head._1 -> JsNull))
-				case _: JsValue => None
-			}
-			val njson = tmp.map (jo => json ++ jo)
-			 .getOrElse(json)
-			sanField(tail, njson)
-		}
-		case Nil => json
-	}
+    def searchVariantsRequest(jsonTxt: String): String = {
+    val json: JsValue = Json.parse(jsonTxt)
+    val fields = List(
+      ("pageSize",     () => Json.obj("pageSize" -> JsNull),   (j: JsValue) => Json.obj("pageSize"  -> unionField(j, "int"))),
+      ("pageToken",    () => Json.obj("pageToken" -> JsNull),  (j: JsValue) => Json.obj("pageToken" -> unionField(j, "string"))),
+      ("referenceId",  () => Json.obj("referenceId" -> JsNull),(j: JsValue) => Json.obj("referenceId" -> unionField(j, "string"))),
+      ("referenceName",  () => Json.obj("referenceName" -> JsNull),(j: JsValue) => Json.obj("referenceName" -> unionField(j, "string"))),
+      ("variantName",  () => Json.obj("variantName" -> JsNull),(j: JsValue) => Json.obj("variantName" -> unionField(j, "string"))),
+      ("callSetIds", () => Json.obj("callSetIds" -> JsNull), (j: JsValue) => j.as[JsObject])
+    )
 
-	def puant(json: JsObject) : JsObject = {
-		val elt = json \ "pageSize" match {
-			case v: JsValue => Json.obj("pageSize" -> Json.obj("int" -> v))
-			case x => x.as[JsObject]
-		}
-		json ++ elt
-	}
+    val sanJson = sanField(fields, json.as[JsObject])
+    sanJson.as[JsValue].toString()
+  }
 
-	def searchVariantsRequest(jsonTxt: String): String = {
-		val json: JsValue = Json.parse(jsonTxt)
-		val fields = List(
-			"pageToken" -> "int", 
-			"pageSize" -> "int",
-			"referenceId" -> "string", 
-			"referenceName" -> "string",
-			"callSetIds" -> "???",
-			"variantName" -> "string")
-		val sanJson = sanField(fields, json.as[JsObject])
-		puant(sanJson).as[JsValue].toString()
-	}
+  def searchVariantSetsRequest(jsonTxt: String): String = {
+    val json: JsValue = Json.parse(jsonTxt)
+    val fields = List(
+      ("pageSize",     () => Json.obj("pageSize" -> JsNull),   (j: JsValue) => Json.obj("pageSize"  -> unionField(j, "int"))),
+      ("pageToken",    () => Json.obj("pageToken" -> JsNull),  (j: JsValue) => Json.obj("pageToken" -> unionField(j, "string")))
+    )
 
-	def searchVariantSetsRequest(jsonTxt: String): String = {
-		val json: JsValue = Json.parse(jsonTxt)
-		val pageSize = json \ "pageSize" match {
-			case _: JsUndefined => Some(Json.obj("pageSize" -> JsNull))
-			case jsv: JsValue => None
-		}
-		val pageToken = json \ "pageToken" match {
-			case _: JsUndefined => Some(Json.obj("pageToken" -> JsNull))
-			case jsv: JsValue => None
-		}
-		val psJson = pageSize.map( jo => json.as[JsObject] ++ jo )
-		                      .getOrElse(json.as[JsObject])
+    val sanJson = sanField(fields, json.as[JsObject])
+    sanJson.as[JsValue].toString()    
+  }
 
-        val sanJson = pageToken.map( jo => psJson ++ jo )
-		                      .getOrElse(psJson.as[JsObject])
-		sanJson.as[JsValue].toString()
-	}
+  def searchCallSetsRequest(jsonTxt: String): String = {
+    val json: JsValue = Json.parse(jsonTxt)
+    val fields = List(
+      ("name",     () => Json.obj("name" -> JsNull),   (j: JsValue) => Json.obj("name"  -> unionField(j, "string"))),
+      ("pageSize",     () => Json.obj("pageSize" -> JsNull),   (j: JsValue) => Json.obj("pageSize"  -> unionField(j, "int"))),
+      ("pageToken",    () => Json.obj("pageToken" -> JsNull),  (j: JsValue) => Json.obj("pageToken" -> unionField(j, "string")))
+    )
 
-	def searchCallSetsRequest(jsonTxt: String): String = {
-		val json: JsValue = Json.parse(jsonTxt)
-		val fields = List(
-			"pageToken" -> "int", 
-			"pageSize" -> "int",
-			"name" -> "string"
-			)
-		val sanJson = sanField(fields, json.as[JsObject])
-		sanJson.as[JsValue].toString()
-	}
+    val sanJson = sanField(fields, json.as[JsObject])
+    sanJson.as[JsValue].toString()    
+  }
 
 }

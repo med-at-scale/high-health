@@ -79,7 +79,13 @@ object References extends ReferenceMethods {
     new SearchReferenceSetsResponse(refSets, nextPageToken)
   }
 
-  def getReference(x$1: String): org.ga4gh.models.Reference = ???
+  def getReference(id: String): org.ga4gh.models.Reference = {
+    val source = Sources.`med-at-scale`
+    val reference = source.getReferenceById(id)
+    reference.getOrElse(null)
+  }
+
+
   def getReferenceBases(x$1: String,x$2: org.ga4gh.methods.ListReferenceBasesRequest): org.ga4gh.methods.ListReferenceBasesResponse = ???
 
   def getReferenceSet(acc: String): org.ga4gh.models.ReferenceSet = {
@@ -100,7 +106,14 @@ object References extends ReferenceMethods {
                       false)
   }
 
-  def searchReferences(x$1: org.ga4gh.methods.SearchReferencesRequest): org.ga4gh.methods.SearchReferencesResponse = ???
+  def searchReferences(request: org.ga4gh.methods.SearchReferencesRequest): org.ga4gh.methods.SearchReferencesResponse = {
+    val source = Sources.`med-at-scale`
+    val md5sums = request.getMd5checksums.asScala.toList
 
+    val references:java.util.List[org.ga4gh.models.Reference] = md5sums.map(md5 => source.getReferenceByMd5(md5)).collect{case Some(r) => r}
+    new org.ga4gh.methods.SearchReferencesResponse(references, "1")
+  }
 
+  def getSequenceBases(x$1: String,x$2: org.ga4gh.methods.GetSequenceBasesRequest): org.ga4gh.methods.GetSequenceBasesResponse = ???
+  def sendsMode(x$1: String): Boolean = ???
 }

@@ -75,6 +75,12 @@ object VariantController extends Controller {
     Ok(resp.toString).withHeaders(
       "content-type" -> "application/json"
       )
+
+/*
+    Ok("")withHeaders(
+      "content-type" -> "application/json"
+      )
+*/
   }
   /*
       Test by POSTing the below json string on http://localhost:9000/callsets/search
