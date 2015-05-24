@@ -17,7 +17,8 @@ import org.apache.avro.specific.SpecificDatumReader
 import org.apache.avro.ipc.NettyTransceiver
 import org.apache.avro.ipc.specific.SpecificRequestor
 
-import org.ga4gh.methods.{SearchCallSetsRequest, SearchReferencesRequest, SearchReferenceSetsRequest, ReferenceMethods}
+import org.ga4gh.methods._
+import org.ga4gh._
 
 import server.reference.References
 import sanitizer.reference.ReferenceSanitizer
@@ -30,7 +31,7 @@ object ReferenceController extends Controller {
     val jsonStringUnsafe = Json.stringify(json.body)
     println(jsonStringUnsafe)
     val jsonString = ReferenceSanitizer.searchReferenceSetsRequest(jsonStringUnsafe)
-    val searchRequest = fromJson[SearchReferenceSetsRequest](jsonString)
+    val searchRequest = fromJson[GASearchReferenceSetsRequest](jsonString)
     //val resp = server.ReferenceMethods.searchReferences(searchRequest)
     val resp = References.searchReferenceSets(searchRequest)
     Ok(resp.toString).withHeaders(
@@ -51,7 +52,7 @@ object ReferenceController extends Controller {
     println(jsonStringUnsafe)
     val jsonString = ReferenceSanitizer.searchReferencesRequest(jsonStringUnsafe)
     println(jsonString)
-    val searchRequest = fromJson[SearchReferencesRequest](jsonString)
+    val searchRequest = fromJson[GASearchReferencesRequest](jsonString)
     //val resp = server.ReferenceMethods.searchReferences(searchRequest)
     val resp = References.searchReferences(searchRequest)
     Ok(resp.toString).withHeaders(

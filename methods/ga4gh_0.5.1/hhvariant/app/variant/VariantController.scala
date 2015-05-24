@@ -17,7 +17,9 @@ import org.apache.avro.specific.SpecificDatumReader
 import org.apache.avro.ipc.NettyTransceiver
 import org.apache.avro.ipc.specific.SpecificRequestor
 
-import org.ga4gh.methods.{SearchCallSetsRequest, SearchVariantsRequest, SearchVariantSetsRequest, VariantMethods}
+//import org.ga4gh.methods.{SearchCallSetsRequest, SearchVariantsRequest, SearchVariantSetsRequest, VariantMethods}
+
+import org.ga4gh._
 
 import server.variant.Variants
 import sanitizer.variant.VariantSanitizer
@@ -35,7 +37,7 @@ object VariantController extends Controller {
     val jsonStringUnsafe = Json.stringify(json.body)
     val jsonString = VariantSanitizer.searchVariantSetsRequest(jsonStringUnsafe)
     println(jsonString)
-    val searchRequest = fromJson[SearchVariantSetsRequest](jsonString)
+    val searchRequest = fromJson[GASearchVariantSetsRequest](jsonString)
     val resp = Variants.searchVariantSets(searchRequest)
     Ok(resp.toString).withHeaders(
       "content-type" -> "application/json"
@@ -69,7 +71,7 @@ object VariantController extends Controller {
     val jsonStringUnsafe = Json.stringify(json.body)
     val jsonString = VariantSanitizer.searchVariantsRequest(jsonStringUnsafe)
     println(jsonString)
-    val searchRequest = fromJson[SearchVariantsRequest](jsonString)
+    val searchRequest = fromJson[GASearchVariantsRequest](jsonString)
 
     val resp = Variants.searchVariants(searchRequest)
     Ok(resp.toString).withHeaders(
@@ -99,7 +101,7 @@ object VariantController extends Controller {
   def searchCallSets() = Action(BodyParsers.parse.json) { json =>
     val jsonStringUnsafe = Json.stringify(json.body)
     val jsonString = VariantSanitizer.searchCallSetsRequest(jsonStringUnsafe)
-    val searchRequest = fromJson[SearchCallSetsRequest](jsonString)
+    val searchRequest = fromJson[GASearchCallSetsRequest](jsonString)
     //Ok(searchRequest.getVariantSetIds.mkString("\n"))
     println(searchRequest)
     val resp = Variants.searchCallSets(searchRequest)

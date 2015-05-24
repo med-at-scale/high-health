@@ -13,8 +13,7 @@ import org.apache.avro.ipc.NettyServer
 import org.apache.avro.ipc.specific.SpecificResponder
 
 
-import org.ga4gh.models.{Variant, Call, CallSet}
-import org.ga4gh.methods._
+import org.ga4gh._
 
 import org.apache.hadoop.fs.{FileSystem, Path}
 
@@ -25,9 +24,9 @@ import org.bdgenomics.adam.rdd.ADAMContext
 
 import server.{Source, Sources}
 
-object Variants extends VariantMethods {
+object Variants extends GAVariantMethods {
 
-  @transient private [this] lazy val _ipc = new NettyServer(new SpecificResponder(classOf[VariantMethods], this),
+  @transient private [this] lazy val _ipc = new NettyServer(new SpecificResponder(classOf[GAVariantMethods], this),
                                                             new InetSocketAddress(65001)
                                                           )
 
@@ -52,7 +51,7 @@ object Variants extends VariantMethods {
    * `SearchVariantSetsRequest` as the post body and will return a JSON version
    * of `SearchVariantSetsResponse`.
    */
-  def searchVariantSets(request:SearchVariantSetsRequest):SearchVariantSetsResponse = {
+  def searchVariantSets(request: GASearchVariantSetsRequest): GASearchVariantSetsResponse = {
     //@throws AvroRemoteException, GAException
 //    request.datasetIds
 //    request.pageSize
@@ -67,7 +66,7 @@ object Variants extends VariantMethods {
     }
 
     val nextPageToken = ""
-    new SearchVariantSetsResponse(variantSets.toList.asJava, nextPageToken)
+    new GASearchVariantSetsResponse(variantSets.toList.asJava, nextPageToken)
   }
 
 
@@ -78,7 +77,7 @@ object Variants extends VariantMethods {
    * `POST /variants/search` must accept a JSON version of `SearchVariantsRequest`
    * as the post body and will return a JSON version of `SearchVariantsResponse`.
    */
-  def searchVariants(request:SearchVariantsRequest):SearchVariantsResponse = {
+  def searchVariants(request: GASearchVariantsRequest): GASearchVariantsResponse = {
     //@throws AvroRemoteException, GAException
 
     // dataset
@@ -181,11 +180,11 @@ object Variants extends VariantMethods {
         case _                        => -1
       }
       val likelihoods:java.util.List[java.lang.Double] = g.genotypeLikelihoods.asScala.toList.map(x => new java.lang.Double(x.toDouble / 100)).asJava
-      val v = new Variant(
-        java.util.UUID.randomUUID.toString,//TODO
+      val v = new GAVariant(
+        java.util.UUID.randomUUID.toString,//TODO id
         //source.chr(chr),//TODO
-        chr,
-        List(""), //TODO
+        chr,  //variantSetId
+        List(""), //TODO names
         source.createdDate(),//TODO use the date in the 1kg file name
         source.updatedDate(),//TODO use the date in the 1kg file name
         chr,//TODO
@@ -193,13 +192,13 @@ object Variants extends VariantMethods {
         variant.end,
         variant.referenceAllele,
         List(variant.alternateAllele), //TODO → a list? in ADAM, there a single string
-        List(""),    ///TODO allelesIds
-        Map.empty[String, java.util.List[String]].asJava,//TODO
+        //List(""),    ///TODO allelesIds
+        Map.empty[String, java.util.List[String]].asJava,//TODO infos
 
-        List(new Call(
+        List(new GACall(
           "callSetID",    /// callsetID
           "1000genomes",           /// callsetname
-          "Variant_chr1",    // variantId
+          //"Variant_chr1",    // variantId
           /*TODO genotype → The genotype of this variant call. Each value represents either the value of the referenceBases
            field or is a 1-based index into alternateBases.
            If a variant had a referenceBases field of "T", an alternateBases value of ["A", "C"],
@@ -224,7 +223,7 @@ object Variants extends VariantMethods {
       v
     }
 
-    new SearchVariantsResponse(variants.toList.asJava, "nextPageToken")
+    new GASearchVariantsResponse(variants.toList.asJava, "nextPageToken")
   }
 
   /**
@@ -232,7 +231,7 @@ object Variants extends VariantMethods {
    * `POST /callsets/search` must accept a JSON version of `SearchCallSetsRequest`
    * as the post body and will return a JSON version of `SearchCallSetsResponse`.
    */
-  def searchCallSets(request:SearchCallSetsRequest): SearchCallSetsResponse = {
+  def searchCallSets(request: GASearchCallSetsRequest): GASearchCallSetsResponse = {
     //@throws AvroRemoteException, GAException
     val source = Sources.`med-at-scale`
     import scala.collection.JavaConversions._
@@ -241,7 +240,7 @@ object Variants extends VariantMethods {
     val callSets = source.callSets(variantSetIds)
 
 
-    val resp = callSets.map(sets => new SearchCallSetsResponse(List(sets), "")).getOrElse(null)
+    val resp = callSets.map(sets => new GASearchCallSetsResponse(List(sets), "")).getOrElse(null)
     resp
   }
 
@@ -249,17 +248,17 @@ object Variants extends VariantMethods {
    * Gets a `CallSet` by ID.
    * `GET /callsets/{id}` will return a JSON version of `CallSet`.
    */
-  def getCallSet(id:String):CallSet = {
+  def getCallSet(id:String): GACallSet = {
     //@throws AvroRemoteException, GAException
     ???
   }
-  def getAllele(x$1: String): org.ga4gh.models.Allele = ???
+/*  def getAllele(x$1: String): org.ga4gh.models.Allele = ???
   def getVariant(x$1: String): org.ga4gh.models.Variant = ???
   def getVariantSetSequence(x$1: String,x$2: String): org.ga4gh.models.Segment = ???
-  def searchAlleleCalls(x$1: org.ga4gh.methods.SearchAlleleCallsRequest): org.ga4gh.methods.SearchAlleleCallsResponse = ???
-  def searchAlleles(x$1: org.ga4gh.methods.SearchAllelesRequest): org.ga4gh.methods.SearchAllelesResponse = ???
-  def searchCalls(x$1: org.ga4gh.methods.SearchCallsRequest): org.ga4gh.methods.SearchCallsResponse = ???
-  def searchVariantSetSequences(x$1: String,x$2: org.ga4gh.methods.SearchVariantSetSequencesRequest): org.ga4gh.methods.SearchVariantSetSequencesResponse = ???
-
+  def searchAlleleCalls(x$1: org.ga4gh.GASearchAlleleCallsRequest): org.ga4gh.GASearchAlleleCallsResponse = ???
+  def searchAlleles(x$1: org.ga4gh.GASearchAllelesRequest): org.ga4gh.GAearchAllelesResponse = ???
+  def searchCalls(x$1: org.ga4gh.GASearchCallsRequest): org.ga4gh.GASearchCallsResponse = ???
+  def searchVariantSetSequences(x$1: String,x$2: org.ga4gh.GASearchVariantSetSequencesRequest): org.ga4gh.GASearchVariantSetSequencesResponse = ???
+*/
 }
 
