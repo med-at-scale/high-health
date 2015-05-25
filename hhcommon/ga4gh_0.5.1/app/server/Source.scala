@@ -9,19 +9,19 @@ trait DatasetProvider {
 }
 
 trait VariantSetProvider {
-	def variantSetForDataset(id: String):Option[org.ga4gh.models.VariantSet] = None
+	def variantSetForDataset(id: String):Option[org.ga4gh.GAVariantSet] = None
 	// for now, say these dates are provided by a VariantSet
 	def createdDate(): Long = 0L
     def updatedDate(): Long = 0L
 }
 
 trait CallSetProvider {
-	def callSets(ids: List[String]): Option[org.ga4gh.models.CallSet] = None
+	def callSets(ids: List[String]): Option[org.ga4gh.GACallSet] = None
 }
 
 trait ReferenceProvider {
-	def getReferenceByMd5(md5: String): Option[org.ga4gh.models.Reference] = None
-	def getReferenceById(id: String): Option[org.ga4gh.models.Reference] = None
+	def getReferenceByMd5(md5: String): Option[org.ga4gh.GAReference] = None
+	def getReferenceById(id: String): Option[org.ga4gh.GAReference] = None
 }
 
 object Sources {
@@ -34,8 +34,8 @@ object Sources {
 	    override def variantSetForDataset(id: String) = id match {
 	    	case "1000genomes" => {
 	    		val info = Map[String, java.util.List[java.lang.String]]("build" -> List("human", "whatever"))
-	    		val metadata = new org.ga4gh.models.VariantSetMetadata("reference", "GRCh37", "genome", "UNKNOWN_TYPE", "1", "genome", info)
-	    		Some(new org.ga4gh.models.VariantSet("22", "1000genomes", "referenceSetId", List[org.ga4gh.models.VariantSetMetadata](metadata)))
+	    		val metadata = new org.ga4gh.GAVariantSetMetadata("reference", "GRCh37", "genome", "UNKNOWN_TYPE", "1", "genome", info)
+	    		Some(new org.ga4gh.GAVariantSet("22", "1000genomes", List[org.ga4gh.GAVariantSetMetadata](metadata)))
 	    	}
 	    	case _ => None
 	    }
@@ -44,7 +44,7 @@ object Sources {
 
 	    override def callSets(ids: List[String]) = {
 	    	val info: java.util.Map[String,java.util.List[String]] = Map[String, java.util.List[java.lang.String]]("build" -> List("human", "whatever"))
-            val callSet = new org.ga4gh.models.CallSet("id", 
+            val callSet = new org.ga4gh.GACallSet("id", 
                               "name", 
                               "sampleId", 
                               ids, 
@@ -53,16 +53,16 @@ object Sources {
                               info)
             Some(callSet)
 	    }
-	    override def getReferenceByMd5(md5: String): Option[org.ga4gh.models.Reference] = md5 match {
+	    override def getReferenceByMd5(md5: String): Option[org.ga4gh.GAReference] = md5 match {
 	    	case "1b22b98cdeb4a9304cb5d48026a85128" => 
-	    	  val segment = new org.ga4gh.models.Segment(
+	    	  /*val segment = new org.ga4gh.GASegment(
 	    	  	new org.ga4gh.models.Position("chr1", "id", 0L, org.ga4gh.models.Strand.POS_STRAND), 
 	    	  	249250621L, 
 	    	  	new org.ga4gh.models.Position("chr1", "id", 0L, org.ga4gh.models.Strand.POS_STRAND), 
 	    	  	new org.ga4gh.models.Position("chr1", "id", 0L, org.ga4gh.models.Strand.POS_STRAND))
-
-	    	  Some(new org.ga4gh.models.Reference(
-	    		segment,//org.ga4gh.models.Segment segment, // segment
+*/
+	    	  Some(new org.ga4gh.GAReference(
+	    		//segment,//org.ga4gh.models.Segment segment, // segment
 	    	    "id",  // id
 	    	    249250621L, // length
 	    	    "1b22b98cdeb4a9304cb5d48026a85128", //md5
@@ -75,7 +75,7 @@ object Sources {
 	    	  )
 	    	case _ => None
 	    }
-    	override def getReferenceById(id: String): Option[org.ga4gh.models.Reference] = id match {
+    	override def getReferenceById(id: String): Option[org.ga4gh.GAReference] = id match {
         	case "id" => getReferenceByMd5("1b22b98cdeb4a9304cb5d48026a85128")
     	    case _ => None
         }

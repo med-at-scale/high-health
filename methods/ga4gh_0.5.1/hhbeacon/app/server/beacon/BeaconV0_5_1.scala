@@ -14,8 +14,7 @@ import org.apache.avro.ipc.specific.SpecificResponder
 
 
 //import org.ga4gh.models.{Variant, Call, CallSet}
-//import org.ga4gh.methods._
-import org.ga4gh.beacon._
+import org.ga4gh._
 
 import org.apache.hadoop.fs.{FileSystem, Path}
 
@@ -50,9 +49,9 @@ object BeaconV0_5_1 extends BEACON {
   // → care!
 
   @transient lazy val adam = server.SparkProvider.adamContext
-/* deactivate to get master 0.6.0 compiling
+
   def index(request:BEACONRequest):BEACONResponse = {
     new BEACONResponse(true, 1)
   }
-  */
+
 }
