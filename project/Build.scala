@@ -2,6 +2,8 @@ import sbt._
 import Keys._
 import play.PlayImport._
 
+import GA4GH._
+
 // multi modules: https://github.com/kifi/multiproject/blob/master/conf%2Froutes
 
 object HighHealthBuild extends Build {
@@ -13,7 +15,7 @@ object HighHealthBuild extends Build {
 
   val hhcommonDependencies = Seq(
     // Add your project dependencies here,
-    "med-at-scale"        %  "ga4gh-model-java" % "0.1.1-SNAPSHOT"   excludeAll(ExclusionRule("org.mortbay.jetty"), ExclusionRule("org.eclipse.jetty")),
+    ga4ghDependency,
     "org.apache.avro"     %  "avro-ipc"         % "1.7.6"  excludeAll(ExclusionRule("org.mortbay.jetty"), ExclusionRule("org.eclipse.jetty")),
     "com.typesafe.play"   %% "play"             % "2.3.7"  excludeAll(ExclusionRule("com.typesafe.akka"))
     // can be a better option for CORS → "com.github.dwhjames" %% "play-cors"        % "0.1.0"  excludeAll(ExclusionRule("com.typesafe.akka"))
@@ -54,7 +56,7 @@ object HighHealthBuild extends Build {
                               "-Xmax-classfile-name",
                               "140")
 
-  val hhcommon = Project("hhcommon", file("hhcommon")).enablePlugins(play.PlayScala)
+  val hhcommon = Project("hhcommon", file(ga4ghDir("hhcommon"))).enablePlugins(play.PlayScala)
   .settings(
     resolvers ++= allResolvers
   )
@@ -70,7 +72,7 @@ object HighHealthBuild extends Build {
     javaOptions in Test += "-Dconfig.resource=common-application.conf"
   )
 
-  val hhmetadata = Project("hhmetadata", file("methods/hhmetadata")).enablePlugins(play.PlayScala).settings(
+  val hhmetadata = Project("hhmetadata", file(ga4ghMethodDir("hhmetadata"))).enablePlugins(play.PlayScala).settings(
       libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhmetadataDependencies,
       scalacOptions ++= scalaBuildOptions,
       sources in doc in Compile := List(),
@@ -79,7 +81,7 @@ object HighHealthBuild extends Build {
     .dependsOn(hhcommon % "test->test;compile->compile")
     .aggregate(hhcommon)
 
-  val hhread = Project("hhread", file("methods/hhread")).enablePlugins(play.PlayScala).settings(
+  val hhread = Project("hhread", file(ga4ghMethodDir("hhread"))).enablePlugins(play.PlayScala).settings(
       libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhreadDependencies,
       scalacOptions ++= scalaBuildOptions,
       sources in doc in Compile := List(),
@@ -88,7 +90,7 @@ object HighHealthBuild extends Build {
     .dependsOn(hhcommon % "test->test;compile->compile")
     .aggregate(hhcommon)
 
-  val hhreference = Project("hhreference", file("methods/hhreference")).enablePlugins(play.PlayScala).settings(
+  val hhreference = Project("hhreference", file(ga4ghMethodDir("hhreference"))).enablePlugins(play.PlayScala).settings(
       libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhreferenceDependencies,
       scalacOptions ++= scalaBuildOptions,
       sources in doc in Compile := List(),
@@ -97,7 +99,7 @@ object HighHealthBuild extends Build {
     .dependsOn(hhcommon % "test->test;compile->compile")
     .aggregate(hhcommon)
 
-  val hhvariant = Project("hhvariant", file("methods/hhvariant")).enablePlugins(play.PlayScala).settings(
+  val hhvariant = Project("hhvariant", file(ga4ghMethodDir("hhvariant"))).enablePlugins(play.PlayScala).settings(
       libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhvariantDependencies,
       scalacOptions ++= scalaBuildOptions,
       sources in doc in Compile := List(),
@@ -106,7 +108,7 @@ object HighHealthBuild extends Build {
     .dependsOn(hhcommon % "test->test;compile->compile")
     .aggregate(hhcommon)
 
-  val hhbeacon = Project("hhbeacon", file("methods/hhbeacon")).enablePlugins(play.PlayScala).settings(
+  val hhbeacon = Project("hhbeacon", file(ga4ghMethodDir("hhbeacon"))).enablePlugins(play.PlayScala).settings(
       libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhbeaconDependencies,
       scalacOptions ++= scalaBuildOptions,
       sources in doc in Compile := List(),
@@ -115,7 +117,7 @@ object HighHealthBuild extends Build {
     .dependsOn(hhcommon % "test->test;compile->compile")
     .aggregate(hhcommon)
 
-  val hhcustom = Project("hhcustom", file("methods/hhcustom")).enablePlugins(play.PlayScala).settings(
+  val hhcustom = Project("hhcustom", file(ga4ghMethodDir("hhcustom"))).enablePlugins(play.PlayScala).settings(
       libraryDependencies ++= hhcommonDependencies ++ hhmethodsDependencies ++ hhcustomDependencies,
       scalacOptions ++= scalaBuildOptions,
       sources in doc in Compile := List(),

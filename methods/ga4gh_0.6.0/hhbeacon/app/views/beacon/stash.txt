@@ -1,0 +1,51 @@
+@(version:String)
+
+@import helper._
+
+@ui(version) {
+  @form(action = controllers.beacon.routes.BeaconController.fromUI(version)) {
+    <fieldset>
+      <legend>Beacon parameters</legend>
+
+      <label>Population id</label>
+      <input type="text" name="populationId" placeholder="Population id"/>
+
+      <label>Reference version</label>
+      <input type="text" name="referenceVersion" placeholder="Reference version"/>
+
+      <label>Chromosome</label>
+      <input type="text" name="chromosome" placeholder="Chromosome"/>
+
+      <label>Coordinate</label>
+      <input type="number" name="coordinate" value="0"/>
+
+      <label>Allele</label>
+      <input type="text" name="allele" placeholder="Allele"/>
+    </fieldset>
+
+    <button type="submit" class="btn">Apply</button>
+  }
+}
+
+
+@(version:String, query:controllers.beacon.BeaconController.FlatBeacon, result:(Boolean, Long))
+
+@import helper._
+
+@ui(version) {
+
+  @if(result._1){
+    <h3>Found @{result._2} instances of the following beacon</h3>
+  }else{
+    <h3>Didn't found the following beacon</h3>
+  }
+  <div>
+    <ul style="list-type: none">
+      <li>Population Id: @{query.populationId}</li>
+      <li>Reference Version: @{query.referenceVersion}</li>
+      <li>Chromosome: @{query.chromosome}</li>
+      <li>Coordinate: @{query.coordinate}</li>
+      <li>Allele: @{query.allele}</li>
+    </ul>
+  <div>
+}
