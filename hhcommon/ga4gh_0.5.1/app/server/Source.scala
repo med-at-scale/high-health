@@ -4,6 +4,10 @@ import scala.collection.JavaConversions._
 
 // WILL HAVE TO SEE HOW MUCH A SOURCE IS PROVIDING...
 // THIS WILL HAVE TO BE READ FROM A REAL STORAGE ENGINE
+trait BeaconProvider {
+	def sourceOfChr(chr: String): String = ""
+}
+
 trait DatasetProvider {
 	def datasets = List[String]("1000genomes")
 }
@@ -27,8 +31,11 @@ trait ReferenceProvider {
 object Sources {
 
   val `med-at-scale` =
-    new Source("s3n://med-at-scale/1000genomes/", ((i:String) => s"ALL.chr$i.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.adam")) 
-      with DatasetProvider with VariantSetProvider with CallSetProvider with ReferenceProvider {
+    new Source(ref = "s3n://med-at-scale/1000genomes/", ((i:String) => s"ALL.chr$i.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.adam")) 
+      with BeaconProvider with DatasetProvider with VariantSetProvider with CallSetProvider with ReferenceProvider {
+
+      	override def sourceOfChr(ch: String): String = s"${getRef()}allele-freqs/$ch"
+
         val fmt = new java.text.SimpleDateFormat("yyyyMMdd")
         override def datasets = List[String]("1000genomes")
 	    override def variantSetForDataset(id: String) = id match {
@@ -82,6 +89,7 @@ object Sources {
     }
 }
 
-class Source(ref:String, pattern:String=>String) {
+class Source(ref: String, pattern:String=>String) {
   def chr(chromosome:String):String = ref + pattern(chromosome)
+  def getRef() = ref
 }

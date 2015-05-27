@@ -69,7 +69,7 @@ object BeaconController extends Controller {
       true
     }
 // remove references to Beacon on master because 0.5.1 ga4gh version
-    def toAvro = ??? //new BEACONRequest(populationId, referenceVersion, chromosome, coordinate, allele)
+    def toAvro = new BEACONRequest(populationId, referenceVersion, chromosome, coordinate, allele)
   }
 
   val beaconForm = Form(
