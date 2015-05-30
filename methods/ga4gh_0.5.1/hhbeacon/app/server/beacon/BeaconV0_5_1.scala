@@ -74,7 +74,8 @@ object BeaconV0_5_1 extends BEACON {
       val cntOpt: Option[Short] = variant(0)._2.get(allele)
       cntOpt.map{
         cnt => 
-          new BEACONResponse(true, (10000.0*cnt/variant(0)._2.values.map(_.toInt).reduce(_+_)).toLong)
+          //new BEACONResponse(true, (10000.0*cnt/variant(0)._2.values.map(_.toInt).reduce(_+_)).toLong)
+          new BEACONResponse(true, cnt.toLong)
       } 
     }
     else None
