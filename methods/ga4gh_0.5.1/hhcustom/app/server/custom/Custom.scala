@@ -6,8 +6,7 @@ import org.apache.avro.AvroRemoteException
 
 import org.apache.spark.rdd.RDD
 
-import org.ga4gh.models.CallSet
-import org.ga4gh.methods.{VariantMethods => IVariantMethods, _}
+//import org.ga4gh.methods.{VariantMethods => IVariantMethods, _}
 
 import org.apache.hadoop.fs.{FileSystem, Path}
 

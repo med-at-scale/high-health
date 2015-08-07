@@ -17,7 +17,7 @@ import org.apache.avro.specific.SpecificDatumReader
 import org.apache.avro.ipc.NettyTransceiver
 import org.apache.avro.ipc.specific.SpecificRequestor
 
-import org.ga4gh.methods._
+//import org.ga4gh.methods._
 import org.ga4gh._
 
 import server.reference.References

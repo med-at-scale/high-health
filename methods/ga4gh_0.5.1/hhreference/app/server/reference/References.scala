@@ -114,6 +114,6 @@ object References extends GAReferenceMethods {
     new org.ga4gh.GASearchReferencesResponse(references, "1")
   }
 
-  def getSequenceBases(x$1: String,x$2: org.ga4gh.methods.GetSequenceBasesRequest): org.ga4gh.methods.GetSequenceBasesResponse = ???
-  def sendsMode(x$1: String): Boolean = ???
+  //def getSequenceBases(x$1: String,x$2: org.ga4gh.methods.GetSequenceBasesRequest): org.ga4gh.methods.GetSequenceBasesResponse = ???
+  //def sendsMode(x$1: String): Boolean = ???
 }
