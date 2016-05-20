@@ -1,3 +1,4 @@
+#
 #GET  /:version/beacon/ui                        controllers.beacon.BeaconController.ui(version:String)
 #POST /:version/beacon/ui                        controllers.beacon.BeaconController.fromUI(version:String)
 #POST /:version/beacon                           controllers.beacon.BeaconController.index(version:String)

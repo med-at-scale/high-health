@@ -3,6 +3,7 @@
 
 ## Running the server
 
+
 ### S3 keys to access med-at-scale adam formatted 1000genomes genotypes
 ```
 export AWS_ACCESS_KEY_ID=<access-key-id>

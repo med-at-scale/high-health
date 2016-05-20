@@ -23,7 +23,7 @@ object HighHealthBuild extends Build {
 
   //shared by methods
   val hhmethodsDependencies  = Seq(
-    "org.apache.spark"    %% "spark-core"       % "1.2.1" ,
+    "org.apache.spark"    %% "spark-core"       % "1.6.1" ,
     "org.bdgenomics.adam" %  "adam-core"        % "0.16.0"
   )
 

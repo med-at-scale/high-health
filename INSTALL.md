@@ -12,6 +12,7 @@ sbt publishLocal
 cd ..
 ```
 
+
 GA4GH java classes
 ==================
 
